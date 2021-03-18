@@ -1,0 +1,7 @@
+sample	condition
+small.sample_01	0
+small.sample_02	0
+small.sample_03	0
+small.sample_04	1
+small.sample_05	1
+small.sample_06	1
