@@ -77,7 +77,7 @@ mkdir -p $baseout
 
 echo "[INFO] [HISAT2] ["`date "+%Y/%m/%d-%H:%M:%S"`"] Started processing $dir"$'\n'
 
-for sample in `sed '1d' pdata | cut -f1`; do
+for sample in `sed '1d' $pdata | cut -f1`; do
 	samplein=$samples/$sample
 	sampleout=$baseout/$sample.bam
 	[ -f "$sampleout" ] && echo "[INFO] [HISAT] $sampleout already exists; skipping.."$'\n' && continue
