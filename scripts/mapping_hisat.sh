@@ -68,7 +68,7 @@ while true; do
 done
 
 baseout=$out/HISAT/dta
-hisat='/home/software/hisat/hisat2'
+hisat='/home/software/hisat2/hisat2'
 hindex="$index/hisat2/INDEX"
 
 dir=$(basename $out)
