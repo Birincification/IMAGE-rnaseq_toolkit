@@ -60,7 +60,7 @@ while true; do
 			;;
 		--dexseq)
 			dexseq="y"
-			shift 2
+			shift
 			;;
         --)
             shift
