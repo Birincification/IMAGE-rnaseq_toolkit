@@ -92,16 +92,18 @@ echo "[INFO] [featureCounts] ["`date "+%Y/%m/%d-%H:%M:%S"`"] Started processing 
 cd $out/HISAT/dta
 watch pidstat -dru -hl '>>' $log/featureCounts_${dir}-$(date +%s).pidstat & wid=$!
 
-$featureCounts -T $nthread -B -C -a $gtf --primary -o $baseout ${hisatBams[@]}
+$featureCounts -T $nthread -p -B -C -a $gtf --primary -o $baseout ${hisatBams[@]}
 
 kill -15 $wid
+
+sed '1d' $baseout | cut -f 1,7- > $out/gene.counts
 
 ##exon_part level counting
 if [[ "$dexseq" = "y" ]]; then
 	echo "[INFO] [featureCounts] ["`date "+%Y/%m/%d-%H:%M:%S"`"] Started processing $baseout.DEXSeq"$'\n'
 	watch pidstat -dru -hl '>>' $log/featureCounts_exonicpart_${dir}-$(date +%s).pidstat & wid=$!
 	
-	$featureCounts -T $nthread -B -C -O -f -t exonic_part -a $index/dexseq/annot.noaggregate.gtf --primary -o $baseout.DEXSeq ${hisatBams[@]}
+	$featureCounts -T $nthread -p -B -C -O -f -t exonic_part -a $index/dexseq/annot.noaggregate.gtf --primary -o $baseout.DEXSeq ${hisatBams[@]}
 
 	kill -15 $wid
 fi
