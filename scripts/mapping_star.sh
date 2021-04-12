@@ -77,7 +77,7 @@ mkdir -p $baseout
 
 echo "[INFO] [STAR] ["`date "+%Y/%m/%d-%H:%M:%S"`"] Started processing $dir"$'\n'
 
-for sample in `sed '1d' pdata | cut -f1`; do
+for sample in `sed '1d' $pdata | cut -f1`; do
 	samplein=$samples/$sample
 	sampleout=$baseout/$sample
 	[ -f "$sampleout.bam" ] && echo "[INFO] [STAR] $sampleout already exists; skipping.."$'\n' && continue
