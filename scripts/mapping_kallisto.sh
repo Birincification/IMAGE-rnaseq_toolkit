@@ -80,7 +80,7 @@ while true; do
     esac
 done
 
-baseout=$out/kallisto/quant
+baseout=$out/KALLISTO/quant
 kallisto='/home/software/kallisto/kallisto'
 kindex="$index/kallisto/INDEX"
 
@@ -90,7 +90,7 @@ mkdir -p $baseout
 
 echo "[INFO] [kallisto] ["`date "+%Y/%m/%d-%H:%M:%S"`"] Started processing $dir"$'\n'
 
-for sample in `sed '1d' pdata | cut -f1`; do
+for sample in `sed '1d' $pdata | cut -f1`; do
 	samplein=$samples/$sample
 	sampleout=$baseout/$sample
 	[ "$(ls -A $sampleout)" ] && echo "[INFO] [kallisto] $sampleout already exists; skipping.."$'\n' && continue

@@ -96,8 +96,6 @@ $featureCounts -T $nthread -p -B -C -a $gtf --primary -o $baseout ${hisatBams[@]
 
 kill -15 $wid
 
-sed '1d' $baseout | cut -f 1,7- > $out/gene.counts
-
 ##exon_part level counting
 if [[ "$dexseq" = "y" ]]; then
 	echo "[INFO] [featureCounts] ["`date "+%Y/%m/%d-%H:%M:%S"`"] Started processing $baseout.DEXSeq"$'\n'
@@ -107,6 +105,8 @@ if [[ "$dexseq" = "y" ]]; then
 
 	kill -15 $wid
 fi
+
+sed '1d' $baseout | cut -f 1,7- > $out/gene.counts
 
 echo "[INFO] [featureCounts] ["`date "+%Y/%m/%d-%H:%M:%S"`"] Finished processing $out"$'\n'
 
@@ -156,5 +156,5 @@ echo "[INFO] [featureCounts] ["`date "+%Y/%m/%d-%H:%M:%S"`"] Finished processing
 #                      reads for exons rather than genes).
 #
 #/home/software/subread/bin/featureCounts -s 0 -T 6 -p -B -C --fracOverlap 1 -a /home/GENOMIC_DERIVED/PAN/homo_sapiens/standardchr/Homo_sapiens.GRCh37.75.gtf --primary -o output/COUNTS/featureCounts output/cond1_02.bam output/cond2_01.bam output/cond1_01.bam output/cond2_00.bam output/cond1_00.bam output/cond2_02.bam
-
+#
 #/home/software/subread/bin/featureCounts -O -s 0 -T 6 -p -B -C -f -t exonic_part -a /home/indices/DEXSeq/9606/standardchr/annot.noaggregate.gtf --primary -o output/COUNTS/featureCounts.DEXSeq output/cond1_02.bam output/cond2_01.bam output/cond1_01.bam output/cond2_00.bam output/cond1_00.bam output/cond2_02.bam
