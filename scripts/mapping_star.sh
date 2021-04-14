@@ -69,7 +69,7 @@ done
 
 baseout=$out/STAR/quant
 star='/home/software/STAR/bin/Linux_x86_64_static/STAR'
-sindex="$index/STAR/INDEX"
+sindex="$index/STAR"
 
 dir=$(basename $out)
 
