@@ -177,7 +177,7 @@ fi
 if [[ "$salmon" = "y" ]]; then
     echo $'\n'"[INFO] [generate_indices.sh] [Salmon] ["`date "+%Y/%m/%d-%H:%M:%S"`"] Start: generate Salmon index..."
     mkdir -p $outdir/salmon/
-	watch pidstat -dru -hl '>>' $log/salmon_index-$(date +%s).pidstat & wid=$!
+	watch pidstat -dru -hl '>>' $log/salmon_cdna-$(date +%s).pidstat & wid=$!
 
     /usr/bin/time -v /home/software/gffread/gffread -w $outdir/salmon/cdna.fa -g $fasta $gtf
 	
