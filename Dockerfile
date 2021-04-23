@@ -45,3 +45,5 @@ RUN cd /tmp && git clone --branch 1.11 https://github.com/samtools/bcftools.git 
 ADD data /home/data
 ADD scripts /home/scripts
 ADD software /home/software
+
+RUN cd /home/software && git clone --branch v2.3 https://github.com/comprna/SUPPA.git
