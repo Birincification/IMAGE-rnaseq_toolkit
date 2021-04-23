@@ -81,22 +81,17 @@ rindex="$index/R/tx2gene.RData"
 for file in `find $sampledir -name "*eq_classes.txt.gz"`; do gunzip $file; done
 for file in `find $sampledir2 -name "*eq_classes.txt.gz"`; do gunzip $file; done  
 
-
-
-
-/home/scripts/bandits/das_bandits.R ${params[@]}
-
-
 watch pidstat -dru -hl '>>' $log/bandits_salmon-$(date +%s).pidstat & wid=$!
-
-/home/scripts/bandits/das_bandits.R --tx2gene $rindex --pdata $pdata --basedir $sampledir --outfile $outfile.salmon_reads --ncores $nthread
+( [ -f "$outfile.salmon_reads" ] && echo "$'\n'[INFO] [BANDITS] $outfile.salmon_reads already exists; skipping.." ) || \
+	(/home/scripts/bandits/das_bandits.R --tx2gene $rindex --pdata $pdata --basedir $sampledir --outfile $outfile.salmon_reads --ncores $nthread)
 
 kill -15 $wid
 
 
 watch pidstat -dru -hl '>>' $log/bandits_salmon_star-$(date +%s).pidstat & wid=$!
 
-/home/scripts/bandits/das_bandits.R --tx2gene $rindex --pdata $pdata --basedir $sampledir2 --outfile $outfile.salmon_star --ncores $nthread
+( [ -f "$outfile.salmon_star" ] && echo "$'\n'[INFO] [BANDITS] $outfile.salmon_star already exists; skipping.." ) || \
+	(/home/scripts/bandits/das_bandits.R --tx2gene $rindex --pdata $pdata --basedir $sampledir2 --outfile $outfile.salmon_star --ncores $nthread)
 
 kill -15 $wid
 
