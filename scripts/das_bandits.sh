@@ -16,7 +16,7 @@ if [[ ${PIPESTATUS[0]} -ne 4 ]]; then
 fi
 
 OPTIONS=
-LONGOPTS=pdata:,index:,out:,nthread:,log:
+LONGOPTS=pdata:,index:,out:,nthread:,log:,salmon,kallisto
 
 # -regarding ! and PIPESTATUS see above
 # -temporarily store output to be able to check for errors
@@ -31,7 +31,7 @@ fi
 # read getopt’s output this way to handle the quoting right:
 eval set -- "$PARSED"
 
-pdata=- out=- index=- nthread=4
+pdata=- out=- index=- nthread=4 salmon=n kallisto=n
 # now enjoy the options in order and nicely split until we see --
 while true; do
     case "$1" in
@@ -54,6 +54,14 @@ while true; do
 		--log)
         	log="$2"
             shift 2
+            ;;
+        --salmon)
+            salmon=y
+            shift
+            ;;
+        --kallisto)
+            kallisto=y
+            shift
             ;;
         --)
             shift
@@ -81,19 +89,30 @@ rindex="$index/R/tx2gene.RData"
 for file in `find $sampledir -name "*eq_classes.txt.gz"`; do gunzip $file; done
 for file in `find $sampledir2 -name "*eq_classes.txt.gz"`; do gunzip $file; done  
 
-watch pidstat -dru -hl '>>' $log/bandits_salmon-$(date +%s).pidstat & wid=$!
-( [ -f "$outfile.salmon_reads.gene.results" ] && echo "$'\n'[INFO] [BANDITS] $outfile.salmon_reads already exists; skipping.." ) || \
-	(/home/scripts/bandits/das_bandits.R --tx2gene $rindex --pdata $pdata --basedir $sampledir --outfile $outfile.salmon_reads --ncores $nthread)
+if [[ "$salmon" = "y" ]]; then
+	watch pidstat -dru -hl '>>' $log/bandits_salmon-$(date +%s).pidstat & wid=$!
+	( [ -f "$outfile.salmon_reads.gene.results" ] && echo "$'\n'[INFO] [BANDITS] $outfile.salmon_reads already exists; skipping.." ) || \
+		(/home/scripts/bandits/das_bandits.R --tx2gene $rindex --pdata $pdata --basedir $sampledir --outfile $outfile.salmon_reads --ncores $nthread)
+	
+	kill -15 $wid
 
-kill -15 $wid
 
+	watch pidstat -dru -hl '>>' $log/bandits_salmon_star-$(date +%s).pidstat & wid=$!
 
-watch pidstat -dru -hl '>>' $log/bandits_salmon_star-$(date +%s).pidstat & wid=$!
+	( [ -f "$outfile.salmon_star.gene.results" ] && echo "$'\n'[INFO] [BANDITS] $outfile.salmon_star already exists; skipping.." ) || \
+		(/home/scripts/bandits/das_bandits.R --tx2gene $rindex --pdata $pdata --basedir $sampledir2 --outfile $outfile.salmon_star --ncores $nthread)
 
-( [ -f "$outfile.salmon_star.gene.results" ] && echo "$'\n'[INFO] [BANDITS] $outfile.salmon_star already exists; skipping.." ) || \
-	(/home/scripts/bandits/das_bandits.R --tx2gene $rindex --pdata $pdata --basedir $sampledir2 --outfile $outfile.salmon_star --ncores $nthread)
+	kill -15 $wid
+fi
 
-kill -15 $wid
-
+## for this need to update the rscript with additional params..
+#if [[ "$kallisto" = "y" ]]; then
+#	watch pidstat -dru -hl '>>' $log/bandits_kallisto-$(date +%s).pidstat & wid=$!
+#
+#	( [ -f "$outfile.kallisto.gene.results" ] && echo "$'\n'[INFO] [BANDITS] $outfile.salmon_star already exists; skipping.." ) || \
+#		(/home/scripts/bandits/das_bandits.R --tx2gene $rindex --pdata $pdata --basedir $sampledir3 --outfile $outfile.kallisto --ncores $nthread)
+#
+#	kill -15 $wid
+#fi
 ## TODO implement flag for switch
 #podman run -v $index:$index -v $out:$out -v $pdata:$pdata --rm -it hadziahmetovic/rnaseq-toolkit /home/scripts/das_bandits.R --tx2gene $rindex --pdata $pdata --basedir $sampledir2 --outfile $outfile.kallisto --ncores $nthread
