@@ -73,7 +73,6 @@ fi
 
 SUPPA="python3 /home/software/SUPPA/suppa.py"
 
-gtf=$3
 GTFNAME=`basename $gtf`
 
 mkdir -p $out
