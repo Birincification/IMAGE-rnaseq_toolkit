@@ -75,7 +75,7 @@ SUPPA="python3 /home/software/SUPPA/suppa.py"
 
 GTFNAME=`basename $gtf`
 
-mkdir -p $out
+mkdir -p $out/SUPPA2
 
 #extract events from gtf
 $SUPPA generateEvents -i $gtf -o $out/SUPPA2/$GTFNAME -f ioi
@@ -84,10 +84,11 @@ for d in "READS" "STAR"; do
 	root=$out/SALMON/$d
 	for cond in `sed '1d' $pdata | cut -f2 | sort -u`; do
 		files=`grep $cond $pdata | cut -f1`
+		f=`for file in $files; do echo $root/$file/quant.sf; done`
 		
 		## salmon is -k1 -f4; for kallisto -k1 -f5
-		/home/software/SUPPA//multipleFieldSelection.py \
-			-i `for file in $files; do echo $root/$file/quant.sf` -k 1 -f 4 -o $out/SUPPA2/salmon_$d.$cond.tmp.counts
+		python3 /home/software/SUPPA//multipleFieldSelection.py \
+			-i $f -k 1 -f 4 -o $out/SUPPA2/salmon_$d.$cond.tmp.counts
 		
 		$SUPPA psiPerIsoform -g $gtf -e $out/SUPPA2/salmon_$(basename $root).$cond.tmp.counts -o $out/SUPPA2/$d.$cond &> /dev/null
 	done
