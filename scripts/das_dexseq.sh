@@ -104,25 +104,26 @@ mkdir -p $out/DEXSEQ
 for method in "hisat"; do #"star" "contextmap" "ideal"; do
 	if [[ "${map[$method]}}" = "y" ]]; then
 
-	watch pidstat -dru -hl '>>' $log/dexseq_$method-$(date +%s).pidstat & wid=$!
+		watch pidstat -dru -hl '>>' $log/dexseq_$method-$(date +%s).pidstat & wid=$!
 
-	##generate counts
-	echo "[INFO] [DEXSeq] ["`date "+%Y/%m/%d-%H:%M:%S"`"] $dexseqFilter"
-	$dexseqFilter $out/COUNTS/featureCounts.DEXSeq
-	echo "[INFO] [DEXSeq] ["`date "+%Y/%m/%d-%H:%M:%S"`"] $dexseqHT"
-	$dexseqHT --fcfile $out/COUNTS/featureCounts.DEXSeq.filtered --htdir $out/DEXSEQ/${method}_HTcounts --sampletable /home/sample.list
-	echo "[INFO] [DEXSeq] ["`date "+%Y/%m/%d-%H:%M:%S"`"] Preprocessing finished"$'\n'
+		##generate counts
+		echo "[INFO] [DEXSeq] ["`date "+%Y/%m/%d-%H:%M:%S"`"] $dexseqFilter"
+		$dexseqFilter $out/COUNTS/featureCounts.DEXSeq
+		echo "[INFO] [DEXSeq] ["`date "+%Y/%m/%d-%H:%M:%S"`"] $dexseqHT"
+		$dexseqHT --fcfile $out/COUNTS/featureCounts.DEXSeq.filtered --htdir $out/DEXSEQ/${method}_HTcounts --sampletable /home/sample.list
+		echo "[INFO] [DEXSeq] ["`date "+%Y/%m/%d-%H:%M:%S"`"] Preprocessing finished"$'\n'
 
-	kill -15 $wid
+		kill -15 $wid
 
 
-	watch pidstat -dru -hl '>>' $log/dexseq_$method-$(date +%s).pidstat & wid=$!
+		watch pidstat -dru -hl '>>' $log/dexseq_$method-$(date +%s).pidstat & wid=$!
 
-	( [ -f "$out/diff_splicing_outs/DEXSeq.$method.out" ] && echo "[INFO] [DEXSeq] $out/diff_splicing_outs/DEXSeq.$method.out already exists, skipping.."$'\n' ) \
-		|| ($dexseq_script $pdata $out/DEXSEQ/${method}_HTcounts /home/cond.pairs $index/dexseq/annot.noaggregate.gtf
-		$out/diff_splicing_outs $method)
+		( [ -f "$out/diff_splicing_outs/DEXSeq.$method.out" ] && echo "[INFO] [DEXSeq] $out/diff_splicing_outs/DEXSeq.$method.out already exists, skipping.."$'\n' ) \
+			|| ($dexseq_script $pdata $out/DEXSEQ/${method}_HTcounts /home/cond.pairs $index/dexseq/annot.noaggregate.gtf
+			$out/diff_splicing_outs $method)
 
-	kill -15 $wid
-
+		kill -15 $wid
+	fi
+done
 
 echo "[INFO] [DEXSeq] ["`date "+%Y/%m/%d-%H:%M:%S"`"] Splicing analysis finished"$'\n'
