@@ -119,8 +119,7 @@ for method in "hisat"; do #"star" "contextmap" "ideal"; do
 		watch pidstat -dru -hl '>>' $log/dexseq_$method-$(date +%s).pidstat & wid=$!
 
 		( [ -f "$out/diff_splicing_outs/DEXSeq.$method.out" ] && echo "[INFO] [DEXSeq] $out/diff_splicing_outs/DEXSeq.$method.out already exists, skipping.."$'\n' ) \
-			|| ($dexseq_script $pdata $out/DEXSEQ/${method}_HTcounts /home/cond.pairs $index/dexseq/annot.noaggregate.gtf
-			$out/diff_splicing_outs $method)
+			|| ($dexseq_script $pdata $out/DEXSEQ/${method}_HTcounts /home/cond.pairs $index/dexseq/annot.noaggregate.gtf $out/diff_splicing_outs $method)
 
 		kill -15 $wid
 	fi
