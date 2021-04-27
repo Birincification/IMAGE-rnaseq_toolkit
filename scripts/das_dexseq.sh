@@ -102,7 +102,7 @@ dexseqHT='/home/scripts/dexseq/fc_to_ht.py'
 mkdir -p $out/DEXSEQ
 #DEXSeq
 for method in "hisat"; do #"star" "contextmap" "ideal"; do
-	if [[ "${map[$method]}}" = "y" ]]; then
+	if [[ "${map[$method]}" = "y" ]]; then
 
 		watch pidstat -dru -hl '>>' $log/dexseq_$method-$(date +%s).pidstat & wid=$!
 

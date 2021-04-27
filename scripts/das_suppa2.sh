@@ -86,11 +86,15 @@ for d in "READS" "STAR"; do
 		files=`grep $cond $pdata | cut -f1`
 		f=`for file in $files; do echo $root/$file/quant.sf; done`
 		
+		watch pidstat -dru -hl '>>' $log/suppa2_psiPeform_$cond-$(date +%s).pidstat & wid=$!
+
 		## salmon is -k1 -f4; for kallisto -k1 -f5
 		python3 /home/software/SUPPA//multipleFieldSelection.py \
 			-i $f -k 1 -f 4 -o $out/SUPPA2/salmon_$d.$cond.tmp.counts
 		
 		$SUPPA psiPerIsoform -g $gtf -e $out/SUPPA2/salmon_$(basename $root).$cond.tmp.counts -o $out/SUPPA2/$d.$cond &> /dev/null
+
+		kill -15 $wid
 	done
 
 #python3.4 suppa.py joinFiles -f tpm -i sample1.tpm sample2.tpm sample3.tpm -o all_samples_tpms
@@ -99,8 +103,12 @@ for d in "READS" "STAR"; do
 #$SUPPA psiPerIsoform -g $gtf -e $out/COUNTS/tpm.counts.0 -o $out/SUPPA2/c1 &> /dev/null
 #$SUPPA psiPerIsoform -g $gtf -e $out/COUNTS/tpm.counts.1 -o $out/SUPPA2/c2 &> /dev/null
 
+	watch pidstat -dru -hl '>>' $log/suppa2_diff_$d-$(date +%s).pidstat & wid=$!
+
 	$SUPPA diffSplice -m empirical --input $out/SUPPA2/$GTFNAME.ioi --psi $out/SUPPA2/$d*_isoform.psi \
     	-e $out/SUPPA2/salmon_$d* -pa -gc -c -o $out/SUPPA2/SUPPA_salmon_$d.out
+
+	kill -15 $wid
 
 #cat $outDir/SUPPA2/SUPPA.out.dpsi.temp.0 | awk '{split($1,a,";"); print a[1]"\t"$2"\t"$3}' > $outDir/SUPPA2/test_suppa.out
 	cat $out/SUPPA2/SUPPA_salmon_$d.out.dpsi | awk '{split($1,a,";"); print a[1]"\t"$2"\t"$3}' > $out/diff_splicing_outs/SUPPA_salmon_$d.out
