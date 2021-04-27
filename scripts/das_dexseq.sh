@@ -91,7 +91,7 @@ if [[ $# -ne 0 ]]; then
 fi
 
 
-sed '1d' $pdata | cut -f2 | uniq | tr "\\n" "\\t" > /home/cond.pairs
+sed '1d' $pdata | cut -f2 | uniq | tr "\\n" "\\t" | rev | cut -c 2- | rev > /home/cond.pairs
 sed '1d' $pdata | cut -f1 | awk '{print $1 ".bam"}' > /home/sample.list
 
 dexseq_script="/home/scripts/dexseq/das_dexseq.R"
