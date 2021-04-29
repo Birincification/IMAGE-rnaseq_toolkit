@@ -10,6 +10,7 @@ parser$add_argument('--counts')
 parser$add_argument('--pdata')
 parser$add_argument('--tool', default="kallisto", choices=c("kallisto", "salmon"))
 parser$add_argument('--seed', default=1984)
+parser$add_argument('--ncores', default=4)
 parser$add_argument('--outfile')
 parser$add_argument('--tx2gene', required=TRUE)
 #parser$add_argument('--mart_dataset', default="hsapiens_gene_ensembl")
@@ -21,6 +22,7 @@ args <- parser$parse_args(commandArgs(trailingOnly=T))
 
 SEED <- as.numeric(args$seed)
 set.seed(SEED)
+ncores <- as.numeric(args$ncores)
 
 p.data <- read.csv(args$pdata, sep="\t", stringsAsFactors=F)
 p.data$sample_id <- p.data$sample
@@ -94,17 +96,19 @@ print("filtered data")
 design_full <- model.matrix(~ group, data=samples(d))
 print(design_full)
 
-d <- dmPrecision(d, design=design_full)
+BPPARAM = MultiCoreParam(ncores)
+
+d <- dmPrecision(d, design=design_full, BPPARAM=BPPARAM)
 print("estimated precision")
 
-d <- dmFit(d, design=design_full, verbose=1)
+d <- dmFit(d, design=design_full, verbose=1, BPPARAM=BPPARAM)
 print("fit model")
 print(head(coefficients(d), level="feature"))
 
 design_null <- model.matrix(~ 1, data=samples(d))
 
 #d <- dmTest(d, coef="group1")
-d <- dmTest(d, design=design_null)
+d <- dmTest(d, design=design_null, BPPARAM=BPPARAM)
 print("finished test")
 
 res <- results(d, level="feature")

@@ -93,7 +93,7 @@ if [[ "$kallisto" = "y" ]]; then
 	watch pidstat -dru -hl '>>' $log/drimseq_kallisto-$(date +%s).pidstat & wid=$!
 	
 	( [ -f "$outfile.kallisto.out" ] && echo "[INFO] [DRIMSeq] $outfile.kallisto.out already exists, skipping.."$'\n' ) \
-		|| ($drimseq --counts $sampledir3 --pdata $pdata --outfile $outfile.kallisto.out --tx2gene $rindex)
+		|| ($drimseq --counts $sampledir3 --pdata $pdata --outfile $outfile.kallisto.out --tx2gene $rindex --ncores $nthread)
 	
 	kill $wid
 fi
