@@ -106,7 +106,7 @@ tmp <- apply(comp.table, 1, function(row)
         #BiocParallel::register(BiocParallel::MulticoreParam(workers=4))
         #DDS <- estimateDispersions(DDS, BPPARAM=BiocParallel::MulticoreParam(workers=4))
 
-		BPPARAM = MultiCoreParam(ncores)
+		BPPARAM = MulticoreParam(ncores)
 
         DDS <- estimateDispersions(DDS, BPPARAM=BPPARAM)
         print("assessing DEU")

@@ -96,7 +96,7 @@ print("filtered data")
 design_full <- model.matrix(~ group, data=samples(d))
 print(design_full)
 
-BPPARAM = MultiCoreParam(ncores)
+BPPARAM = MulticoreParam(ncores)
 
 d <- dmPrecision(d, design=design_full, BPPARAM=BPPARAM)
 print("estimated precision")
