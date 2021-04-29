@@ -2,6 +2,7 @@
 library(argparse)
 library(tximport)
 library(DRIMSeq)
+library(BiocParallel)
 #library(biomaRt)
 
 parser <- ArgumentParser()
