@@ -122,6 +122,7 @@ tmp <- apply(comp.table, 1, function(row)
 
 		save(dxr1, file = file.path(out.dir, "DEXSeq.object"))
 
+		dxr1@listData[["transcripts"]] <- NULL
         #dxr1$transcripts <- gsub("\n", "", dxr1$transcripts)
         write.table(dxr1,out.file, sep="\t", quote=F)
       })
