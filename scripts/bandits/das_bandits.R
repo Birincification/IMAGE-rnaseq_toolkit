@@ -151,3 +151,5 @@ message("finished the computation")
 write.table(results@Gene_results, paste0(args$outfile, ".gene.results"), sep="\t", quote=F)
 write.table(results@Transcript_results, paste0(args$outfile, ".transcript.results"), sep="\t", quote=F)
 
+
+## http://bioconductor.org/packages/devel/bioc/vignettes/BANDITS/inst/doc/BANDITS.html
