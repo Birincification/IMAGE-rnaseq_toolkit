@@ -1,26 +1,56 @@
 #!/usr/local/bin/Rscript
-args <- commandArgs(trailingOnly=T)
-if(length(args) == 0)
-{
-    print("usage: sample.file, count.dir, comp.table, gtf.file, out.dir")
-    q()
-}
+#args <- commandArgs(trailingOnly=T)
+#if(length(args) == 0)
+#{
+#    print("usage: sample.file, count.dir, comp.table, gtf.file, out.dir")
+#    q()
+#}
+
+#sample.file <- args[1]
+#count.dir <- args[2]
+#comp.table <- args[3]
+#gtf.file <- args[4]
+#out.dir <- args[5]
+#method <- args[6]
+
+#sample.table <- read.csv(sample.file, sep="\t", row.names="sample")
+#count.files <- list.files(count.dir, full.names=T)
+#comp.table <- read.csv(comp.table, sep="\t", header=F)
+
+library(argparse)
 suppressPackageStartupMessages(library(DEXSeq))
 
-sample.file <- args[1]
-count.dir <- args[2]
-comp.table <- args[3]
-gtf.file <- args[4]
-out.dir <- args[5]
-method <- args[6]
 
-sample.table <- read.csv(sample.file, sep="\t", row.names="sample")
-count.files <- list.files(count.dir, full.names=T)
-comp.table <- read.csv(comp.table, sep="\t", header=F)
+parser <- ArgumentParser()
+
+parser$add_argument('--pdata', required=TRUE)
+parser$add_argument('--countdir', required=TRUE)
+parser$add_argument('--condpairs', required=TRUE)
+parser$add_argument('--gtf', required=TRUE)
+
+parser$add_argument('--outdir', required=TRUE)
+parser$add_argument('--method', required=TRUE)
+
+parser$add_argument('--ncores', default=4)
+parser$add_argument('--seed', default=1984)
+
+
+args <- parser$parse_args(commandArgs(trailingOnly=T))
+SEED <- as.numeric(args$seed)
+set.seed(SEED)
+ncores <- as.numeric(args$ncores)
+
+
+sample.table <- read.csv(args$pdata, sep="\t", row.names="sample")
+count.files <- list.files(args$countdir, full.names=T)
+comp.table <- read.csv(args$condpairs, sep="\t", header=F)
+gtf.file <- args$gtf
+out.dir <- args$outdir
+method <- args$method
+
 print(comp.table)
 print(sample.table)
 print(count.files)
-
 
 
 tmp <- apply(comp.table, 1, function(row)
@@ -76,11 +106,13 @@ tmp <- apply(comp.table, 1, function(row)
         #BiocParallel::register(BiocParallel::MulticoreParam(workers=4))
         #DDS <- estimateDispersions(DDS, BPPARAM=BiocParallel::MulticoreParam(workers=4))
 
-        DDS <- estimateDispersions(DDS)
+		BPPARAM = MultiCoreParam(ncores)
+
+        DDS <- estimateDispersions(DDS, BPPARAM=BPPARAM)
         print("assessing DEU")
-        DDS <- testForDEU(DDS)
+        DDS <- testForDEU(DDS, BPPARAM=BPPARAM)
         print("estimating fold changes")
-        DDS = estimateExonFoldChanges( DDS, fitExpToVar="condition")
+        DDS = estimateExonFoldChanges( DDS, fitExpToVar="condition", BPPARAM=BPPARAM)
         print(DDS)
         dxr1 = DEXSeqResults( DDS )
         print(row)
@@ -90,10 +122,12 @@ tmp <- apply(comp.table, 1, function(row)
 
 		save(dxr1, file = file.path(out.dir, "DEXSeq.object"))
 
-        dxr1$transcripts <- gsub("\n", "", dxr1$transcripts)
+        #dxr1$transcripts <- gsub("\n", "", dxr1$transcripts)
         write.table(dxr1,out.file, sep="\t", quote=F)
       })
 
 
 #DDS <- DEXSeqDataSetFromSE( SE, design= ~ condition)
 #DDS <- DEXSeqDataSetFromSE(SE, design= ~ sample + exon + condition:exon)
+
+## https://bioconductor.org/packages/devel/bioc/vignettes/DEXSeq/inst/doc/DEXSeq.html
