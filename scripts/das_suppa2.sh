@@ -102,16 +102,17 @@ for d in "READS" "STAR"; do
 ##need to mute these 2 calls
 #$SUPPA psiPerIsoform -g $gtf -e $out/COUNTS/tpm.counts.0 -o $out/SUPPA2/c1 &> /dev/null
 #$SUPPA psiPerIsoform -g $gtf -e $out/COUNTS/tpm.counts.1 -o $out/SUPPA2/c2 &> /dev/null
-
 	watch pidstat -dru -hl '>>' $log/suppa2_diff_$d-$(date +%s).pidstat & wid=$!
 
-	$SUPPA diffSplice -m empirical --input $out/SUPPA2/$GTFNAME.ioi --psi $out/SUPPA2/$d*_isoform.psi \
-    	-e $out/SUPPA2/salmon_$d* -pa -gc -c -o $out/SUPPA2/SUPPA_salmon_$d.out
+	( [ -f "$out/diff_splicing_outs/SUPPA_salmon_$d.out" ] && echo "[INFO] [SUPPA2] $out/diff_splicing_outs/SUPPA_salmon_$d.out already exists, skipping.."$'\n' ) \
+			|| ($SUPPA diffSplice -m empirical --input $out/SUPPA2/$GTFNAME.ioi --psi $out/SUPPA2/$d*_isoform.psi \
+    	-e $out/SUPPA2/salmon_$d* -pa -gc -c -o $out/SUPPA2/SUPPA_salmon_$d.out)
 
 	kill -15 $wid
 
 #cat $outDir/SUPPA2/SUPPA.out.dpsi.temp.0 | awk '{split($1,a,";"); print a[1]"\t"$2"\t"$3}' > $outDir/SUPPA2/test_suppa.out
-	cat $out/SUPPA2/SUPPA_salmon_$d.out.dpsi | awk '{split($1,a,";"); print a[1]"\t"$2"\t"$3}' > $out/diff_splicing_outs/SUPPA_salmon_$d.out
+	( [ -f "$out/diff_splicing_outs/SUPPA_salmon_$d.out" ]) || \
+	(cat $out/SUPPA2/SUPPA_salmon_$d.out.dpsi | awk '{split($1,a,";"); print a[1]"\t"$2"\t"$3}' > $out/diff_splicing_outs/SUPPA_salmon_$d.out)
 done
 #mv $OUTDIR/SUPPA.out.dpsi $5
 #rm -r $OUTDIR
