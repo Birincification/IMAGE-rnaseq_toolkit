@@ -104,7 +104,7 @@ mkdir -p $out/DEXSEQ
 for method in "hisat"; do #"star" "contextmap" "ideal"; do
 	if [[ "${map[$method]}" = "y" ]]; then
 
-		watch pidstat -dru -hl '>>' $log/dexseq_$method-$(date +%s).pidstat & wid=$!
+		watch pidstat -dru -hlH '>>' $log/dexseq_$method-$(date +%s).pidstat & wid=$!
 
 		##generate counts
 		echo "[INFO] [DEXSeq] ["`date "+%Y/%m/%d-%H:%M:%S"`"] $dexseqFilter"
@@ -118,7 +118,7 @@ for method in "hisat"; do #"star" "contextmap" "ideal"; do
 		kill -15 $wid
 
 
-		watch pidstat -dru -hl '>>' $log/dexseq_$method-$(date +%s).pidstat & wid=$!
+		watch pidstat -dru -hlH '>>' $log/dexseq_$method-$(date +%s).pidstat & wid=$!
 
 		( [ -f "$out/diff_splicing_outs/DEXSeq.$method.out" ] && echo "[INFO] [DEXSeq] $out/diff_splicing_outs/DEXSeq.$method.out already exists, skipping.."$'\n' ) \
 			|| ($dexseq_script --pdata $pdata --countdir $out/DEXSEQ/${method}_HTcounts --condpairs /home/cond.pairs \

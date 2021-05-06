@@ -125,7 +125,7 @@ if [[ "$hisat2" = "y" ]]; then
     mkdir -p $outdir/hisat2/tmp
     hisatTMP=$outdir/hisat2/tmp
 
-	watch pidstat -dru -hl '>>' $log/hisat_index-$(date +%s).pidstat & wid=$!
+	watch pidstat -dru -hlH '>>' $log/hisat_index-$(date +%s).pidstat & wid=$!
 
     ## extracting splice sites...
     /usr/bin/time -v python3 /home/software/hisat2-2.2.1/extract_splice_sites.py $gtf >> $hisatTMP/tmp.ss
@@ -148,7 +148,7 @@ if [[ "$star" = "y" ]]; then
     echo $'\n'"[INFO] [generate_indices.sh] [STAR] ["`date "+%Y/%m/%d-%H:%M:%S"`"] Start: generate STAR index..."
     overhang=99
     mkdir -p $outdir/STAR/$overhang
-	watch pidstat -dru -hl '>>' $log/star_index-$(date +%s).pidstat & wid=$!
+	watch pidstat -dru -hlH '>>' $log/star_index-$(date +%s).pidstat & wid=$!
 
 
     /usr/bin/time -v /home/software/STAR/bin/Linux_x86_64_static/STAR --runMode genomeGenerate --runThreadN $nthread \
@@ -164,7 +164,7 @@ fi
 if [[ "$r" = "y" ]]; then
     echo $'\n'"[INFO] [generate_indices.sh] [R] ["`date "+%Y/%m/%d-%H:%M:%S"`"] Start: generate R index..."
     mkdir -p $outdir/R/
-	watch pidstat -dru -hl '>>' $log/r_index-$(date +%s).pidstat & wid=$!
+	watch pidstat -dru -hlH '>>' $log/r_index-$(date +%s).pidstat & wid=$!
 
     /usr/bin/time -v /home/scripts/generate_R_index.R --gtf $gtf --outdir $outdir/R/ --organism $organism --taxonomyId $taxid
 
@@ -177,7 +177,7 @@ fi
 if [[ "$salmon" = "y" ]]; then
     echo $'\n'"[INFO] [generate_indices.sh] [Salmon] ["`date "+%Y/%m/%d-%H:%M:%S"`"] Start: generate Salmon index..."
     mkdir -p $outdir/salmon/
-	watch pidstat -dru -hl '>>' $log/salmon_cdna-$(date +%s).pidstat & wid=$!
+	watch pidstat -dru -hlH '>>' $log/salmon_cdna-$(date +%s).pidstat & wid=$!
 
     /usr/bin/time -v /home/software/gffread/gffread -w $outdir/salmon/cdna.fa -g $fasta $gtf
 	
@@ -190,7 +190,7 @@ fi
 if [[ "$kallisto" = "y" ]]; then
     echo $'\n'"[INFO] [generate_indices.sh] [kallisto] ["`date "+%Y/%m/%d-%H:%M:%S"`"] Start: generate kallisto index..."
     mkdir -p $outdir/kallisto/
-	watch pidstat -dru -hl '>>' $log/kallisto_index-$(date +%s).pidstat & wid=$!
+	watch pidstat -dru -hlH '>>' $log/kallisto_index-$(date +%s).pidstat & wid=$!
 
     /usr/bin/time -v /home/software/kallisto/kallisto index --index $outdir/kallisto/INDEX $outdir/salmon/cdna.fa
 
@@ -203,7 +203,7 @@ fi
 if [[ "$dexseq" = "y" ]]; then
     echo $'\n'"[INFO] [generate_indices.sh] [DEXSeq] ["`date "+%Y/%m/%d-%H:%M:%S"`"] Start: process GTF-File"
     mkdir -p $outdir/dexseq/
-	watch pidstat -dru -hl '>>' $log/dexseq_index-$(date +%s).pidstat & wid=$!
+	watch pidstat -dru -hlH '>>' $log/dexseq_index-$(date +%s).pidstat & wid=$!
 
     /usr/bin/time -v /usr/bin/python3 /home/scripts/dexseq/dexseq_prepare_annotation.py --aggregate=no $gtf $outdir/dexseq/annot.noaggregate.gtf
     /usr/bin/time -v /usr/bin/python3 /home/scripts/dexseq/dexseq_prepare_annotation.py $gtf $outdir/dexseq/annot.gtf

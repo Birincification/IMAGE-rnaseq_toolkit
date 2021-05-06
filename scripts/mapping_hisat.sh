@@ -82,7 +82,7 @@ for sample in `sed '1d' $pdata | cut -f1`; do
 	sampleout=$baseout/$sample.bam
 	[ -f "$sampleout" ] && echo "[INFO] [HISAT] $sampleout already exists; skipping.."$'\n' && continue
 	##paired
-	watch pidstat -dru -hl '>>' $log/hisat2_${dir}_$sample-$(date +%s).pidstat & wid=$!
+	watch pidstat -dru -hlH '>>' $log/hisat2_${dir}_$sample-$(date +%s).pidstat & wid=$!
 
 	[ -f "${samplein}_1.fastq.gz" ] &&\
 		$hisat -q --dta -p $nthread -x $hindex -1 ${samplein}_1.fastq.gz -2 ${samplein}_2.fastq.gz | \

@@ -86,7 +86,7 @@ for d in "READS" "STAR"; do
 		files=`grep $cond $pdata | cut -f1`
 		f=`for file in $files; do echo $root/$file/quant.sf; done`
 		
-		watch pidstat -dru -hl '>>' $log/suppa2_psiPeform_$cond-$(date +%s).pidstat & wid=$!
+		watch pidstat -dru -hlH '>>' $log/suppa2_psiPeform_$cond-$(date +%s).pidstat & wid=$!
 
 		## salmon is -k1 -f4; for kallisto -k1 -f5
 		python3 /home/software/SUPPA//multipleFieldSelection.py \
@@ -102,7 +102,7 @@ for d in "READS" "STAR"; do
 ##need to mute these 2 calls
 #$SUPPA psiPerIsoform -g $gtf -e $out/COUNTS/tpm.counts.0 -o $out/SUPPA2/c1 &> /dev/null
 #$SUPPA psiPerIsoform -g $gtf -e $out/COUNTS/tpm.counts.1 -o $out/SUPPA2/c2 &> /dev/null
-	watch pidstat -dru -hl '>>' $log/suppa2_diff_$d-$(date +%s).pidstat & wid=$!
+	watch pidstat -dru -hlH '>>' $log/suppa2_diff_$d-$(date +%s).pidstat & wid=$!
 
 	( [ -f "$out/diff_splicing_outs/SUPPA_salmon_$d.out" ] && echo "[INFO] [SUPPA2] $out/diff_splicing_outs/SUPPA_salmon_$d.out already exists, skipping.."$'\n' ) \
 			|| ($SUPPA diffSplice -m empirical --input $out/SUPPA2/$GTFNAME.ioi --psi $out/SUPPA2/$d*_isoform.psi \

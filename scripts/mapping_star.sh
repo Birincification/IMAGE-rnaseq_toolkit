@@ -82,7 +82,7 @@ for sample in `sed '1d' $pdata | cut -f1`; do
 	sampleout=$baseout/$sample
 	[ -f "$sampleout.bam" ] && echo "[INFO] [STAR] $sampleout already exists; skipping.."$'\n' && continue
 	##paired
-	watch pidstat -dru -hl '>>' $log/star_${dir}_$sample-$(date +%s).pidstat & wid=$!
+	watch pidstat -dru -hlH '>>' $log/star_${dir}_$sample-$(date +%s).pidstat & wid=$!
 
 	[ -f "${samplein}_1.fastq.gz" ] &&\
 		$star --genomeDir $sindex --readFilesIn ${samplein}_1.fastq.gz ${samplein}_2.fastq.gz --runThreadN $nthread\

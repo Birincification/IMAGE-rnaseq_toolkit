@@ -90,14 +90,14 @@ for file in `find $sampledir -name "*eq_classes.txt.gz"`; do gunzip $file; done
 for file in `find $sampledir2 -name "*eq_classes.txt.gz"`; do gunzip $file; done  
 
 if [[ "$salmon" = "y" ]]; then
-	watch pidstat -dru -hl '>>' $log/bandits_salmon-$(date +%s).pidstat & wid=$!
+	watch pidstat -dru -hlH '>>' $log/bandits_salmon-$(date +%s).pidstat & wid=$!
 	( [ -f "$outfile.salmon_reads.gene.results" ] && echo "$'\n'[INFO] [BANDITS] $outfile.salmon_reads already exists; skipping.." ) || \
 		(/home/scripts/bandits/das_bandits.R --tx2gene $rindex --pdata $pdata --basedir $sampledir --outfile $outfile.salmon_reads --ncores $nthread)
 	
 	kill -15 $wid
 
 
-	watch pidstat -dru -hl '>>' $log/bandits_salmon_star-$(date +%s).pidstat & wid=$!
+	watch pidstat -dru -hlH '>>' $log/bandits_salmon_star-$(date +%s).pidstat & wid=$!
 
 	( [ -f "$outfile.salmon_star.gene.results" ] && echo "$'\n'[INFO] [BANDITS] $outfile.salmon_star already exists; skipping.." ) || \
 		(/home/scripts/bandits/das_bandits.R --tx2gene $rindex --pdata $pdata --basedir $sampledir2 --outfile $outfile.salmon_star --ncores $nthread)
@@ -107,7 +107,7 @@ fi
 
 ## for this need to update the rscript with additional params..
 #if [[ "$kallisto" = "y" ]]; then
-#	watch pidstat -dru -hl '>>' $log/bandits_kallisto-$(date +%s).pidstat & wid=$!
+#	watch pidstat -dru -hlH '>>' $log/bandits_kallisto-$(date +%s).pidstat & wid=$!
 #
 #	( [ -f "$outfile.kallisto.gene.results" ] && echo "$'\n'[INFO] [BANDITS] $outfile.salmon_star already exists; skipping.." ) || \
 #		(/home/scripts/bandits/das_bandits.R --tx2gene $rindex --pdata $pdata --basedir $sampledir3 --outfile $outfile.kallisto --ncores $nthread)

@@ -95,7 +95,7 @@ for sample in `sed '1d' $pdata | cut -f1`; do
 	sampleout=$baseout/$sample
 	[ "$(ls -A $sampleout)" ] && echo "[INFO] [kallisto] $sampleout already exists; skipping.."$'\n' && continue
 	mkdir $sampleout
-	watch pidstat -dru -hl '>>' $log/kallisto_${dir}_$sample-$(date +%s).pidstat & wid=$!
+	watch pidstat -dru -hlH '>>' $log/kallisto_${dir}_$sample-$(date +%s).pidstat & wid=$!
 	
 	##paired
 	[ -f "${samplein}_1.fastq.gz" ] &&\
