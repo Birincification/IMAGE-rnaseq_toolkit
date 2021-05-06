@@ -205,8 +205,8 @@ if [[ "$dexseq" = "y" ]]; then
     mkdir -p $outdir/dexseq/
 	watch pidstat -dru -hl '>>' $log/dexseq_index-$(date +%s).pidstat & wid=$!
 
-    /usr/bin/time -v /usr/bin/python3 /home/scripts/DEXSeq/dexseq_prepare_annotation.py --aggregate=no $gtf $outdir/dexseq/annot.noaggregate.gtf
-    /usr/bin/time -v /usr/bin/python3 /home/scripts/DEXSeq/dexseq_prepare_annotation.py $gtf $outdir/dexseq/annot.gtf
+    /usr/bin/time -v /usr/bin/python3 /home/scripts/dexseq/dexseq_prepare_annotation.py --aggregate=no $gtf $outdir/dexseq/annot.noaggregate.gtf
+    /usr/bin/time -v /usr/bin/python3 /home/scripts/dexseq/dexseq_prepare_annotation.py $gtf $outdir/dexseq/annot.gtf
 
 	kill -15 $wid
     echo "[INFO] [generate_indices.sh] [DEXSeq] ["`date "+%Y/%m/%d-%H:%M:%S"`"] End: process GTF-File"$'\n'
