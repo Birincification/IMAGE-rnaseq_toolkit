@@ -27,7 +27,7 @@ if [[ ${PIPESTATUS[0]} -ne 4 ]]; then
 fi
 
 OPTIONS=
-LONGOPTS=gtf:,fasta:,organism:,taxid:,nthread:,hisat2,star,kallisto,salmon,r,dexseq,index:,empires,log:
+LONGOPTS=gtf:,index:,fasta:,organism:,taxid:,nthread:,hisat2,star,kallisto,salmon,r,dexseq,index:,empires,log:
 
 # -regarding ! and PIPESTATUS see above
 # -temporarily store output to be able to check for errors
@@ -49,6 +49,10 @@ while true; do
     case "$1" in
         --gtf)
             gtf="$2"
+            shift 2
+            ;;
+		--index)
+        	index="$2"
             shift 2
             ;;
         --fasta)
@@ -112,7 +116,7 @@ if [[ $# -ne 0 ]]; then
 fi
 
 
-outdir='/home/data/indices'
+outdir=$index
 echo 'organism:'$'\t'$organism
 echo 'taxid:'$'\t'$taxid
 echo 'gtf:'$'\t'$gtf
