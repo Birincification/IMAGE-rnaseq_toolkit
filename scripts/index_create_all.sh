@@ -120,7 +120,7 @@ echo 'fasta:'$'\t'$fasta
 
 
 ## HISAT2
-if [[ "$hisat2" = "y" ]]; then
+if [[ "$hisat2" = "y" ]] && ! [ -f $outdir/hisat2/done ]; then
     echo $'\n'"[INFO] [generate_indices.sh] [HISAT2] ["`date "+%Y/%m/%d-%H:%M:%S"`"] Start: create index"
     mkdir -p $outdir/hisat2/tmp
     hisatTMP=$outdir/hisat2/tmp
@@ -138,13 +138,15 @@ if [[ "$hisat2" = "y" ]]; then
     rm $hisatTMP/tmp.ss
     rm $hisatTMP/tmp.exon
     rm -r $hisatTMP
+
+	touch $outdir/hisat2/done
     echo "[INFO] [generate_indices.sh] [HISAT2] ["`date "+%Y/%m/%d-%H:%M:%S"`"] End: create index"$'\n'
 fi
 
 
 
 ## STAR
-if [[ "$star" = "y" ]]; then
+if [[ "$star" = "y" ]] && ! [ -f $outdir/STAR/done ]; then
     echo $'\n'"[INFO] [generate_indices.sh] [STAR] ["`date "+%Y/%m/%d-%H:%M:%S"`"] Start: generate STAR index..."
     overhang=99
     mkdir -p $outdir/STAR/$overhang
@@ -156,12 +158,14 @@ if [[ "$star" = "y" ]]; then
     --sjdbGTFfile $gtf --sjdbOverhang $overhang
 
 	kill -15 $wid
+
+	touch $outdir/STAR/done
     echo $'\n'"[INFO] [generate_indices.sh] [STAR] ["`date "+%Y/%m/%d-%H:%M:%S"`"] End: generate STAR index..."
 fi
 
 
 ## R
-if [[ "$r" = "y" ]]; then
+if [[ "$r" = "y" ]] && ! [ -f $outdir/R/done ]; then
     echo $'\n'"[INFO] [generate_indices.sh] [R] ["`date "+%Y/%m/%d-%H:%M:%S"`"] Start: generate R index..."
     mkdir -p $outdir/R/
 	watch pidstat -dru -hlH '>>' $log/r_index-$(date +%s).pidstat & wid=$!
@@ -169,12 +173,14 @@ if [[ "$r" = "y" ]]; then
     /usr/bin/time -v /home/scripts/generate_R_index.R --gtf $gtf --outdir $outdir/R/ --organism $organism --taxonomyId $taxid
 
 	kill -15 $wid
+
+	touch $outdir/R/done
     echo "[INFO] [generate_indices.sh] [R] ["`date "+%Y/%m/%d-%H:%M:%S"`"] End: generate R index..."$'\n'
 fi
 
 
 ## SALMON -> will be moved to standalone image
-if [[ "$salmon" = "y" ]]; then
+if [[ "$salmon" = "y" ]] && ! [ -f $outdir/salmon/done ]; then
     echo $'\n'"[INFO] [generate_indices.sh] [Salmon] ["`date "+%Y/%m/%d-%H:%M:%S"`"] Start: generate Salmon index..."
     mkdir -p $outdir/salmon/
 	watch pidstat -dru -hlH '>>' $log/salmon_cdna-$(date +%s).pidstat & wid=$!
@@ -182,12 +188,14 @@ if [[ "$salmon" = "y" ]]; then
     /usr/bin/time -v /home/software/gffread/gffread -w $outdir/salmon/cdna.fa -g $fasta $gtf
 	
 	kill -15 $wid
+
+	touch $outdir/salmon/done
     echo $'\n'"[INFO] [generate_indices.sh] [Salmon] ["`date "+%Y/%m/%d-%H:%M:%S"`"] Start: generate Salmon index..."
 fi
 
 
 ## KALLISTO
-if [[ "$kallisto" = "y" ]]; then
+if [[ "$kallisto" = "y" ]] && ! [ -f $outdir/kallisto/done ]; then
     echo $'\n'"[INFO] [generate_indices.sh] [kallisto] ["`date "+%Y/%m/%d-%H:%M:%S"`"] Start: generate kallisto index..."
     mkdir -p $outdir/kallisto/
 	watch pidstat -dru -hlH '>>' $log/kallisto_index-$(date +%s).pidstat & wid=$!
@@ -195,12 +203,14 @@ if [[ "$kallisto" = "y" ]]; then
     /usr/bin/time -v /home/software/kallisto/kallisto index --index $outdir/kallisto/INDEX $outdir/salmon/cdna.fa
 
 	kill -15 $wid
+
+	touch $outdir/kallisto/done
     echo "[INFO] [generate_indices.sh] [kallisto] ["`date "+%Y/%m/%d-%H:%M:%S"`"] End: generate kallisto index..."$'\n'
 fi
 
 
 ## DEXSeq
-if [[ "$dexseq" = "y" ]]; then
+if [[ "$dexseq" = "y" ]] && ! [ -f $outdir/dexseq/done ]; then
     echo $'\n'"[INFO] [generate_indices.sh] [DEXSeq] ["`date "+%Y/%m/%d-%H:%M:%S"`"] Start: process GTF-File"
     mkdir -p $outdir/dexseq/
 	watch pidstat -dru -hlH '>>' $log/dexseq_index-$(date +%s).pidstat & wid=$!
@@ -209,5 +219,7 @@ if [[ "$dexseq" = "y" ]]; then
     /usr/bin/time -v /usr/bin/python3 /home/scripts/dexseq/dexseq_prepare_annotation.py $gtf $outdir/dexseq/annot.gtf
 
 	kill -15 $wid
+
+	touch $outdir/dexseq/done
     echo "[INFO] [generate_indices.sh] [DEXSeq] ["`date "+%Y/%m/%d-%H:%M:%S"`"] End: process GTF-File"$'\n'
 fi
