@@ -132,11 +132,11 @@ if [[ "$hisat2" = "y" ]] && ! [ -f $outdir/hisat2/done ]; then
 	watch pidstat -dru -hlH '>>' $log/hisat_index-$(date +%s).pidstat & wid=$!
 
     ## extracting splice sites...
-    /usr/bin/time -v python3 /home/software/hisat2-2.2.1/extract_splice_sites.py $gtf >> $hisatTMP/tmp.ss
+    python3 /home/software/hisat2-2.2.1/extract_splice_sites.py $gtf >> $hisatTMP/tmp.ss
     ## extracting exons...
-    /usr/bin/time -v python3 /home/software/hisat2-2.2.1/extract_exons.py $gtf >> $hisatTMP/tmp.exon
+    python3 /home/software/hisat2-2.2.1/extract_exons.py $gtf >> $hisatTMP/tmp.exon
     ## building index...
-    /usr/bin/time -v python3 /home/software/hisat2-2.2.1/hisat2-build -p 8 --ss $hisatTMP/tmp.ss --exon $hisatTMP/tmp.exon $fasta $outdir/hisat2/INDEX
+    python3 /home/software/hisat2-2.2.1/hisat2-build -p 8 --ss $hisatTMP/tmp.ss --exon $hisatTMP/tmp.exon $fasta $outdir/hisat2/INDEX
 
 	kill -15 $wid
     rm $hisatTMP/tmp.ss
@@ -157,7 +157,7 @@ if [[ "$star" = "y" ]] && ! [ -f $outdir/STAR/done ]; then
 	watch pidstat -dru -hlH '>>' $log/star_index-$(date +%s).pidstat & wid=$!
 
 
-    /usr/bin/time -v /home/software/STAR/bin/Linux_x86_64_static/STAR --runMode genomeGenerate --runThreadN $nthread \
+    /home/software/STAR/bin/Linux_x86_64_static/STAR --runMode genomeGenerate --runThreadN $nthread \
     --genomeDir $outdir/STAR/ --genomeFastaFiles $fasta \
     --sjdbGTFfile $gtf --sjdbOverhang $overhang
 
@@ -174,7 +174,7 @@ if [[ "$r" = "y" ]] && ! [ -f $outdir/R/done ]; then
     mkdir -p $outdir/R/
 	watch pidstat -dru -hlH '>>' $log/r_index-$(date +%s).pidstat & wid=$!
 
-    /usr/bin/time -v /home/scripts/generate_R_index.R --gtf $gtf --outdir $outdir/R/ --organism $organism --taxonomyId $taxid
+    /home/scripts/R/generate_R_index.R --gtf $gtf --outdir $outdir/R/ --organism $organism --taxonomyId $taxid
 
 	kill -15 $wid
 
@@ -189,7 +189,7 @@ if [[ "$salmon" = "y" ]] && ! [ -f $outdir/salmon/done ]; then
     mkdir -p $outdir/salmon/
 	watch pidstat -dru -hlH '>>' $log/salmon_cdna-$(date +%s).pidstat & wid=$!
 
-    /usr/bin/time -v /home/software/gffread/gffread -w $outdir/salmon/cdna.fa -g $fasta $gtf
+    home/software/gffread/gffread -w $outdir/salmon/cdna.fa -g $fasta $gtf
 	
 	kill -15 $wid
 
@@ -204,7 +204,7 @@ if [[ "$kallisto" = "y" ]] && ! [ -f $outdir/kallisto/done ]; then
     mkdir -p $outdir/kallisto/
 	watch pidstat -dru -hlH '>>' $log/kallisto_index-$(date +%s).pidstat & wid=$!
 
-    /usr/bin/time -v /home/software/kallisto/kallisto index --index $outdir/kallisto/INDEX $outdir/salmon/cdna.fa
+    /home/software/kallisto/kallisto index --index $outdir/kallisto/INDEX $outdir/salmon/cdna.fa
 
 	kill -15 $wid
 
@@ -219,8 +219,8 @@ if [[ "$dexseq" = "y" ]] && ! [ -f $outdir/dexseq/done ]; then
     mkdir -p $outdir/dexseq/
 	watch pidstat -dru -hlH '>>' $log/dexseq_index-$(date +%s).pidstat & wid=$!
 
-    /usr/bin/time -v /usr/bin/python3 /home/scripts/dexseq/dexseq_prepare_annotation.py --aggregate=no $gtf $outdir/dexseq/annot.noaggregate.gtf
-    /usr/bin/time -v /usr/bin/python3 /home/scripts/dexseq/dexseq_prepare_annotation.py $gtf $outdir/dexseq/annot.gtf
+    /usr/bin/python3 /home/scripts/dexseq/dexseq_prepare_annotation.py --aggregate=no $gtf $outdir/dexseq/annot.noaggregate.gtf
+    /usr/bin/python3 /home/scripts/dexseq/dexseq_prepare_annotation.py $gtf $outdir/dexseq/annot.gtf
 
 	kill -15 $wid
 
