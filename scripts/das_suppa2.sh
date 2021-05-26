@@ -91,6 +91,9 @@ for d in "READS" "STAR"; do
 		## salmon is -k1 -f4; for kallisto -k1 -f5
 		python3 /home/software/SUPPA//multipleFieldSelection.py \
 			-i $f -k 1 -f 4 -o $out/SUPPA2/salmon_$d.$cond.tmp.counts
+
+		python3 /home/software/SUPPA//multipleFieldSelection.py \
+			-i $f -k 1 -f 5 -o $out/SUPPA2/salmon_$d.$cond.read.counts
 		
 		$SUPPA psiPerIsoform -g $gtf -e $out/SUPPA2/salmon_$(basename $root).$cond.tmp.counts -o $out/SUPPA2/$d.$cond &> /dev/null
 
