@@ -87,13 +87,15 @@ for sample in `sed '1d' $pdata | cut -f1`; do
 	[ -f "${samplein}_1.fastq.gz" ] &&\
 		$star --genomeDir $sindex --readFilesIn ${samplein}_1.fastq.gz ${samplein}_2.fastq.gz --runThreadN $nthread\
 			--outFileNamePrefix $sampleout --readFilesCommand zcat \
-			--outSAMstrandField intronMotif --quantMode TranscriptomeSAM GeneCounts --outSAMtype BAM SortedByCoordinate
+			--outSAMstrandField intronMotif --quantMode TranscriptomeSAM GeneCounts --outSAMtype BAM SortedByCoordinate \
+			--limitBAMsortRAM 100000000000 --outBAMsortingBinsN 200
 
 	##unpaired
 	[ -f "$samplein.fastq.gz" ] &&\
 		$star --genomeDir $sindex --readFilesIn ${samplein}.fastq.gz --runThreadN $nthread\
 			--outFileNamePrefix $sampleout --readFilesCommand zcat \
-			--outSAMstrandField intronMotif --quantMode TranscriptomeSAM GeneCounts --outSAMtype BAM SortedByCoordinate
+			--outSAMstrandField intronMotif --quantMode TranscriptomeSAM GeneCounts --outSAMtype BAM SortedByCoordinate \
+			--limitBAMsortRAM 100000000000 --outBAMsortingBinsN 200
 
 	mv ${sampleout}Aligned.sortedByCoord.out.bam $sampleout.bam
 	samtools index -@ $nthread $sampleout.bam $sampleout.bam.bai
