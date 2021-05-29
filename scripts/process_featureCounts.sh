@@ -114,7 +114,7 @@ done
 
 for method in "hisat" "star" "contextmap" "ideal"; do
 
-	if [[ "${map[$method]}}" = "y" ]]; then
+	if [[ "${map[$method]}" = "y" ]]; then
 		basein=$out/${paths[$method]}
 		baseout=$out/COUNTS/featureCounts.$method
 
