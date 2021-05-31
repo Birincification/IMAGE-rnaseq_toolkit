@@ -103,11 +103,11 @@ for sample in `sed '1d' $pdata | cut -f1`; do
 	
 	##paired
 	[ -f "${samplein}_1.fastq.gz" ] &&\
-		$kallisto quant -t $nthread --index $kindex --output-dir $sampleout --bias -b $bootstrap ${samplein}_1.fastq.gz ${samplein}_2.fastq.gz &&
+		$kallisto quant -t $nthread --index $kindex --output-dir $sampleout --bias -b $bootstrap ${samplein}_1.fastq.gz ${samplein}_2.fastq.gz && \
 		$kallisto pseudo -t $nthreads --index $kindex --output-dir $sampleoutP ${samplein}_1.fastq.gz ${samplein}_2.fastq.gz
 	##unpaired
 	[ -f "$samplein.fastq.gz" ] &&\
-		$kallisto quant -t $nthread --index $kindex -l $fraglen -s $sd --output-dir $sampleout --bias -b $bootstrap --single $samplein.fastq.gz &&
+		$kallisto quant -t $nthread --index $kindex -l $fraglen -s $sd --output-dir $sampleout --bias -b $bootstrap --single $samplein.fastq.gz && \
 		$kallisto pseudo -t $nthreads --index $kindex --output-dir $sampleoutP --single $samplein.fastq.gz
 
 	kill -15 $wid
