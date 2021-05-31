@@ -81,28 +81,34 @@ while true; do
 done
 
 baseout=$out/KALLISTO/quant
+baseoutP=$out/KALLISTO/pseudo
 kallisto='/home/software/kallisto/kallisto'
 kindex="$index/kallisto/INDEX"
 
 dir=$(basename $out)
 
 mkdir -p $baseout
+mkdir -p $baseoutP
 
 echo "[INFO] [kallisto] ["`date "+%Y/%m/%d-%H:%M:%S"`"] Started processing $dir"$'\n'
 
 for sample in `sed '1d' $pdata | cut -f1`; do
 	samplein=$samples/$sample
 	sampleout=$baseout/$sample
+	sampleoutP=$baseoutP/$sample
+
 	[ "$(ls -A $sampleout)" ] && echo "[INFO] [kallisto] $sampleout already exists; skipping.."$'\n' && continue
 	mkdir $sampleout
 	watch pidstat -dru -hlH '>>' $log/kallisto_${dir}_$sample-$(date +%s).pidstat & wid=$!
 	
 	##paired
 	[ -f "${samplein}_1.fastq.gz" ] &&\
-		$kallisto quant -t $nthread --index $kindex --output-dir $sampleout --bias -b $bootstrap ${samplein}_1.fastq.gz ${samplein}_2.fastq.gz
+		$kallisto quant -t $nthread --index $kindex --output-dir $sampleout --bias -b $bootstrap ${samplein}_1.fastq.gz ${samplein}_2.fastq.gz &&
+		$kallisto pseudo -t $nthreads --index $kindex --output-dir $sampleoutP ${samplein}_1.fastq.gz ${samplein}_2.fastq.gz
 	##unpaired
 	[ -f "$samplein.fastq.gz" ] &&\
-		$kallisto quant -t $nthread --index $kindex -l $fraglen -s $sd --output-dir $sampleout --bias -b $bootstrap --single $samplein.fastq.gz
+		$kallisto quant -t $nthread --index $kindex -l $fraglen -s $sd --output-dir $sampleout --bias -b $bootstrap --single $samplein.fastq.gz &&
+		$kallisto pseudo -t $nthreads --index $kindex --output-dir $sampleoutP --single $samplein.fastq.gz
 
 	kill -15 $wid
 done

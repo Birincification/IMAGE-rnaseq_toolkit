@@ -8,7 +8,7 @@ parser <- ArgumentParser()
 parser$add_argument('--gtf', required=FALSE)
 parser$add_argument('--cdna', required=FALSE)
 parser$add_argument('--tx2gene', required=FALSE)
-# parser$add_argument('--tool', default="kallisto", choices=c("kallisto", "salmon")) # kallisto or salmon
+parser$add_argument('--tool', default="kallisto", choices=c("kallisto", "salmon")) # kallisto or salmon
 parser$add_argument('--pdata')
 parser$add_argument('--basedir')
 parser$add_argument('--ncores', default=4)
@@ -64,8 +64,29 @@ print(p.data)
 samples <- p.data$sample
 
 ##################################################################################
-#if(args$tool == "kallisto")
-#{
+if(args$tool == "kallisto")
+{ 
+	message(sprintf("reading kallisto input from %s for:", args$basedir))
+    print(samples)
+
+    files <- file.path(args$basedir, "alignment", samples, "abundance.h5")
+    names(files) <- samples
+
+    if(!all(file.exists(files)))
+    {
+        message("not all kallisto ouput files exist!")
+        print(files)
+        print(file.exists(files))
+        q()
+    }
+
+	equiv_classes <- file.path(args$basedir, "pseudo", samples, "pseudoalignments.ec")
+    equiv_counts <- file.path(args$basedir, "pseudo", samples, "pseudoalignments.tsv")
+    
+    txi <- tximport(files, type="kallisto", txOut=TRUE)
+
+} else if (args$tool == "salmon") {
+
     message(sprintf("reading salmon input from %s for:", args$basedir))
     print(samples)
 
@@ -85,11 +106,11 @@ samples <- p.data$sample
 
     txi = tximport(files = quant_files, type = "salmon", txOut = TRUE)
 
-#} else
-#{
-#    message("only kallisto is tool is implemented yet!")
-#    q()
-#}
+} else
+{
+    message("only inputs from kallisto|salmon implemented!")
+    q()
+}
 ##################################################################################
 
 counts = txi$counts
@@ -106,9 +127,22 @@ transcripts_to_keep = filter_transcripts(gene_to_transcript = gene_tr_id,
 
 ##################################################################################
 # read equivalence class data
-#if(args$tool == "kallisto")
-#{
-    print("reading input data from kallisto...")
+if(args$tool == "kallisto")
+{
+	print("reading input data from kallisto...")
+    system.time(input_data <- create_data(salmon_or_kallisto="kallisto",
+                              gene_to_transcript=gene_tr_id,
+                              kallisto_equiv_classes=equiv_classes,
+                              kallisto_equiv_counts=equiv_counts,
+                              kallisto_counts=counts,
+                              eff_len=eff_len,n_cores=ncores,
+                              transcripts_to_keep=transcripts_to_keep))
+
+    print("finished reading input!")
+    input_data <- filter_genes(input_data, min_counts_per_gene=20)
+
+} else if (args$tool == "salmon")
+    print("reading input data from salmon...")
     system.time(input_data <- create_data(salmon_or_kallisto="salmon",
                               gene_to_transcript=gene_tr_id,
                               salmon_path_to_eq_classes=equiv_classes,
@@ -118,11 +152,11 @@ transcripts_to_keep = filter_transcripts(gene_to_transcript = gene_tr_id,
     print("finished reading input!")
     input_data <- filter_genes(input_data, min_counts_per_gene=20)
 
-#} else
-#{
-#    message("only kallisto is tool is implemented yet!")
-#    q()
-#}
+} else
+{
+    message("only kallisto is tool is implemented yet!")
+    q()
+}
 ##################################################################################
 
 #compute prior -> left out because of complications as reported by author

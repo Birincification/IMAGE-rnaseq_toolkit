@@ -81,7 +81,7 @@ fi
 
 sampledir="$out/SALMON/READS"
 sampledir2="$out/SALMON/STAR"
-sampledir3="$out/KALLISTO/quant"
+sampledir3="$out/KALLISTO"
 
 outfile="$out/diff_splicing_outs/BANDITS"
 rindex="$index/R/tx2gene.RData"
@@ -92,7 +92,7 @@ for file in `find $sampledir2 -name "*eq_classes.txt.gz"`; do gunzip $file; done
 if [[ "$salmon" = "y" ]]; then
 	watch pidstat -dru -hlH '>>' $log/bandits_salmon-$(date +%s).pidstat & wid=$!
 	( [ -f "$outfile.salmon_reads.gene.results" ] && echo "$'\n'[INFO] [BANDITS] $outfile.salmon_reads already exists; skipping.." ) || \
-		(/home/scripts/bandits/das_bandits.R --tx2gene $rindex --pdata $pdata --basedir $sampledir --outfile $outfile.salmon_reads --ncores $nthread)
+		(/home/scripts/bandits/das_bandits.R --tx2gene $rindex --pdata $pdata --basedir $sampledir --outfile $outfile.salmon_reads --ncores $nthread --tool salmon)
 	
 	kill -15 $wid
 
@@ -100,19 +100,19 @@ if [[ "$salmon" = "y" ]]; then
 	watch pidstat -dru -hlH '>>' $log/bandits_salmon_star-$(date +%s).pidstat & wid=$!
 
 	( [ -f "$outfile.salmon_star.gene.results" ] && echo "$'\n'[INFO] [BANDITS] $outfile.salmon_star already exists; skipping.." ) || \
-		(/home/scripts/bandits/das_bandits.R --tx2gene $rindex --pdata $pdata --basedir $sampledir2 --outfile $outfile.salmon_star --ncores $nthread)
+		(/home/scripts/bandits/das_bandits.R --tx2gene $rindex --pdata $pdata --basedir $sampledir2 --outfile $outfile.salmon_star --ncores $nthread --tool salmon)
 
 	kill -15 $wid
 fi
 
 ## for this need to update the rscript with additional params..
-#if [[ "$kallisto" = "y" ]]; then
-#	watch pidstat -dru -hlH '>>' $log/bandits_kallisto-$(date +%s).pidstat & wid=$!
-#
-#	( [ -f "$outfile.kallisto.gene.results" ] && echo "$'\n'[INFO] [BANDITS] $outfile.salmon_star already exists; skipping.." ) || \
-#		(/home/scripts/bandits/das_bandits.R --tx2gene $rindex --pdata $pdata --basedir $sampledir3 --outfile $outfile.kallisto --ncores $nthread)
-#
-#	kill -15 $wid
-#fi
+if [[ "$kallisto" = "y" ]]; then
+	watch pidstat -dru -hlH '>>' $log/bandits_kallisto-$(date +%s).pidstat & wid=$!
+
+	( [ -f "$outfile.kallisto.gene.results" ] && echo "$'\n'[INFO] [BANDITS] $outfile.kallisto already exists; skipping.." ) || \
+		(/home/scripts/bandits/das_bandits.R --tx2gene $rindex --pdata $pdata --basedir $sampledir3 --outfile $outfile.kallisto --ncores $nthread --tool kallisto)
+
+	kill -15 $wid
+fi
 ## TODO implement flag for switch
 #podman run -v $index:$index -v $out:$out -v $pdata:$pdata --rm -it hadziahmetovic/rnaseq-toolkit /home/scripts/das_bandits.R --tx2gene $rindex --pdata $pdata --basedir $sampledir2 --outfile $outfile.kallisto --ncores $nthread
