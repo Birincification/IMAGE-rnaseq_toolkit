@@ -101,7 +101,7 @@ dexseqHT='/home/scripts/dexseq/fc_to_ht.py'
 
 mkdir -p $out/DEXSEQ
 #DEXSeq
-for method in "hisat"; do #"star" "contextmap" "ideal"; do
+for method in "hisat" "star" "contextmap" "ideal"; do
 	if [[ "${map[$method]}" = "y" ]]; then
 
 		basein=$out/COUNTS/featureCounts.$method.DEXSeq
