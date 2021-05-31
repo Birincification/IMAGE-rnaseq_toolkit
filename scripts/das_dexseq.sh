@@ -104,15 +104,17 @@ mkdir -p $out/DEXSEQ
 for method in "hisat"; do #"star" "contextmap" "ideal"; do
 	if [[ "${map[$method]}" = "y" ]]; then
 
+		basein=$out/COUNTS/featureCounts.$method.DEXSeq
+
 		watch pidstat -dru -hlH '>>' $log/dexseq_$method-$(date +%s).pidstat & wid=$!
 
 		##generate counts
 		echo "[INFO] [DEXSeq] ["`date "+%Y/%m/%d-%H:%M:%S"`"] $dexseqFilter"
 
 		## here add $method to DEXSeq.$method and also in fC generation
-		$dexseqFilter $out/COUNTS/featureCounts.DEXSeq
+		$dexseqFilter $basein
 		echo "[INFO] [DEXSeq] ["`date "+%Y/%m/%d-%H:%M:%S"`"] $dexseqHT"
-		$dexseqHT --fcfile $out/COUNTS/featureCounts.DEXSeq.filtered --htdir $out/DEXSEQ/${method}_HTcounts --sampletable /home/sample.list
+		$dexseqHT --fcfile $basein.filtered --htdir $out/DEXSEQ/${method}_HTcounts --sampletable /home/sample.list
 		echo "[INFO] [DEXSeq] ["`date "+%Y/%m/%d-%H:%M:%S"`"] Preprocessing finished"$'\n'
 
 		kill -15 $wid
