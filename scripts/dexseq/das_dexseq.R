@@ -120,7 +120,7 @@ tmp <- apply(comp.table, 1, function(row)
 		qvals <- perGeneQValue(dxr1)
 		dxr1@listData[["qvalue"]] <- unname(ifelse(is.na(qvals[dxr1[["groupID"]]]), "1", qvals[dxr1[["groupID"]]]))
 
-		save(dxr1, file = file.path(out.dir, "DEXSeq.object"))
+		save(dxr1, file = file.path(out.dir, paste("DEXSeq.object", method, sep=".")))
 
 		dxr1@listData[["transcripts"]] <- NULL
         #dxr1$transcripts <- gsub("\n", "", dxr1$transcripts)

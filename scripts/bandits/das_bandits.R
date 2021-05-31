@@ -69,7 +69,7 @@ if(args$tool == "kallisto")
 	message(sprintf("reading kallisto input from %s for:", args$basedir))
     print(samples)
 
-    files <- file.path(args$basedir, "alignment", samples, "abundance.h5")
+    files <- file.path(args$basedir, "quant", samples, "abundance.h5")
     names(files) <- samples
 
     if(!all(file.exists(files)))
