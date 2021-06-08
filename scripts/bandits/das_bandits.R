@@ -85,8 +85,8 @@ if(args$tool == "kallisto")
     
     txi <- tximport(files, type="kallisto", txOut=TRUE)
 
-} else if (args$tool == "salmon") {
-
+} else if (args$tool == "salmon") 
+{
     message(sprintf("reading salmon input from %s for:", args$basedir))
     print(samples)
 
@@ -142,6 +142,7 @@ if(args$tool == "kallisto")
     input_data <- filter_genes(input_data, min_counts_per_gene=20)
 
 } else if (args$tool == "salmon")
+{
     print("reading input data from salmon...")
     system.time(input_data <- create_data(salmon_or_kallisto="salmon",
                               gene_to_transcript=gene_tr_id,
