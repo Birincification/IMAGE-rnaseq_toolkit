@@ -83,7 +83,7 @@ $SUPPA generateEvents -i $gtf -o $out/SUPPA2/$GTFNAME -f ioi
 for d in "READS" "STAR"; do
 	root=$out/SALMON/$d
 	for cond in `sed '1d' $pdata | cut -f2 | sort -u`; do
-		files=`grep $cond $pdata | cut -f1`
+		files=`grep -P "\t$cond" $pdata | cut -f1`
 		f=`for file in $files; do echo $root/$file/quant.sf; done`
 		
 		watch pidstat -dru -hlH '>>' $log/suppa2_psiPeform_$cond-$(date +%s).pidstat & wid=$!
