@@ -16,7 +16,7 @@ if [[ ${PIPESTATUS[0]} -ne 4 ]]; then
 fi
 
 OPTIONS=
-LONGOPTS=pdata:,index:,out:,nthread:,log:,salmon,kallisto
+LONGOPTS=pdata:,index:,out:,nthread:,log:,salmon,kallisto,salmonstar
 
 # -regarding ! and PIPESTATUS see above
 # -temporarily store output to be able to check for errors
@@ -31,7 +31,7 @@ fi
 # read getopt’s output this way to handle the quoting right:
 eval set -- "$PARSED"
 
-pdata=- out=- index=- nthread=4 salmon=n kallisto=n
+pdata=- out=- index=- nthread=4 salmon=n kallisto=n salmonstar=n
 # now enjoy the options in order and nicely split until we see --
 while true; do
     case "$1" in
@@ -57,6 +57,10 @@ while true; do
             ;;
         --salmon)
             salmon=y
+            shift
+            ;;
+        --salmonstar)
+            salmonstar=y
             shift
             ;;
         --kallisto)
@@ -95,8 +99,9 @@ if [[ "$salmon" = "y" ]]; then
 		(/home/scripts/bandits/das_bandits.R --tx2gene $rindex --pdata $pdata --basedir $sampledir --outfile $outfile.salmon_reads --ncores $nthread --tool salmon)
 	
 	kill -15 $wid
+fi
 
-
+if [[ "$salmonstar" = "y" ]]; then
 	watch pidstat -dru -hlH '>>' $log/bandits_salmon_star-$(date +%s).pidstat & wid=$!
 
 	( [ -f "$outfile.salmon_star.gene.results" ] && echo "$'\n'[INFO] [BANDITS] $outfile.salmon_star already exists; skipping.." ) || \
