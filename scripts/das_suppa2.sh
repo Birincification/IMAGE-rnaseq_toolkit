@@ -117,7 +117,7 @@ if [[ "$salmon" = "y" ]]; then
 
 	( [ -f "$out/diff_splicing_outs/SUPPA_salmon_$d.out" ] && echo "[INFO] [SUPPA2] $out/diff_splicing_outs/SUPPA_salmon_$d.out already exists, skipping.."$'\n' ) \
 			|| ($SUPPA diffSplice -m empirical --input $out/SUPPA2/$GTFNAME.ioi --psi $out/SUPPA2/$d*_isoform.psi \
-    	-e $out/SUPPA2/salmon_*.$cond.tmp.counts -gc -o $out/SUPPA2/SUPPA_salmon_$d.out)
+    	-e $out/SUPPA2/salmon_*.$d.tmp.counts -gc -o $out/SUPPA2/SUPPA_salmon_$d.out)
 
 	kill -15 $wid
 
@@ -151,7 +151,7 @@ if [[ "$salmonstar" = "y" ]]; then
 
 	( [ -f "$out/diff_splicing_outs/SUPPA_salmon_$d.out" ] && echo "[INFO] [SUPPA2] $out/diff_splicing_outs/SUPPA_salmon_$d.out already exists, skipping.."$'\n' ) \
 			|| ($SUPPA diffSplice -m empirical --input $out/SUPPA2/$GTFNAME.ioi --psi $out/SUPPA2/$d*_isoform.psi \
-    	-e $out/SUPPA2/salmon_*.$cond.tmp.counts -gc -o $out/SUPPA2/SUPPA_salmon_$d.out)
+    	-e $out/SUPPA2/salmon_*.$d.tmp.counts -gc -o $out/SUPPA2/SUPPA_salmon_$d.out)
 
 	kill -15 $wid
 
