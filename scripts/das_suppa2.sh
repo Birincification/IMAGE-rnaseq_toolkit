@@ -108,7 +108,7 @@ if [[ "$salmon" = "y" ]]; then
 		python3 /home/software/SUPPA//multipleFieldSelection.py \
 			-i $f -k 1 -f 5 -o $out/SUPPA2/salmon_$cond.$d.read.counts
 		
-		$SUPPA psiPerIsoform -g $gtf -e $out/SUPPA2/salmon_$(basename $root).$cond.tmp.counts -o $out/SUPPA2/$d.$cond &> /dev/null
+		$SUPPA psiPerIsoform -g $gtf -e $out/SUPPA2/salmon_$(basename $root).$cond.tmp.counts -o $out/SUPPA2/$d.$cond
 
 		kill -15 $wid
 	done
