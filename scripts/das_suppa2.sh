@@ -122,7 +122,7 @@ if [[ "$salmon" = "y" ]]; then
 	kill -15 $wid
 
 	( [ -f "$out/diff_splicing_outs/SUPPA_salmon_$d.out" ]) || \
-	(cat $out/SUPPA2/SUPPA_salmon_$d.out.dpsi | awk '{split($1,a,";"); print a[1]"\t"$2"\t"$3}' > $out/diff_splicing_outs/SUPPA_salmon_$d.out)
+	(cat $out/SUPPA2/SUPPA_salmon_$d.out.dpsi | awk '{split($1,a,";"); print a[1]"\t"$2"\t"$3}' | sort -r -u > $out/diff_splicing_outs/SUPPA_salmon_$d.out)
 fi
 
 
@@ -156,7 +156,7 @@ if [[ "$salmonstar" = "y" ]]; then
 	kill -15 $wid
 
 	( [ -f "$out/diff_splicing_outs/SUPPA_salmon_$d.out" ]) || \
-	(cat $out/SUPPA2/SUPPA_salmon_$d.out.dpsi | awk '{split($1,a,";"); print a[1]"\t"$2"\t"$3}' > $out/diff_splicing_outs/SUPPA_salmon_$d.out)
+	(cat $out/SUPPA2/SUPPA_salmon_$d.out.dpsi | awk '{split($1,a,";"); print a[1]"\t"$2"\t"$3}' | sort -r -u > $out/diff_splicing_outs/SUPPA_salmon_$d.out)
 fi
 
 
@@ -190,5 +190,5 @@ if [[ "$kallisto" = "y" ]]; then
 	kill -15 $wid
 
 	( [ -f "$out/diff_splicing_outs/SUPPA_kallisto.out" ]) || \
-	(cat $out/SUPPA2/SUPPA_kallisto.out.dpsi | awk '{split($1,a,";"); print a[1]"\t"$2"\t"$3}' > $out/diff_splicing_outs/SUPPA_kallisto.out)
+	(cat $out/SUPPA2/SUPPA_kallisto.out.dpsi | awk '{split($1,a,";"); print a[1]"\t"$2"\t"$3}' | sort -r -u > $out/diff_splicing_outs/SUPPA_kallisto.out)
 fi
