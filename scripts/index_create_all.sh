@@ -159,7 +159,7 @@ if [[ "$star" = "y" ]] && ! [ -f $outdir/STAR/done ]; then
 
     /home/software/STAR/bin/Linux_x86_64_static/STAR --runMode genomeGenerate --runThreadN $nthread \
     --genomeDir $outdir/STAR/ --genomeFastaFiles $fasta \
-    --sjdbGTFfile $gtf --sjdbOverhang $overhang
+    --sjdbGTFfile $gtf --sjdbOverhang $overhang --limitGenomeGenerateRAM 150000000000
 
 	kill -15 $wid
 
