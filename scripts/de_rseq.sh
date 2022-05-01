@@ -114,7 +114,7 @@ for method in "hisat" "star" "contextmap" "ideal"; do
 
 		##generate separate count files
 		echo "[INFO] [DiffExp] ["`date "+%Y/%m/%d-%H:%M:%S"`"] $create_input"
-		$create_input $basein $method ${samples[@]}
+		$create_input $basein $method $pdata $out/COUNTS ${samples[@]}
 
 		echo "[INFO] [DiffExp] ["`date "+%Y/%m/%d-%H:%M:%S"`"] Preprocessing finished"$'\n'
 
