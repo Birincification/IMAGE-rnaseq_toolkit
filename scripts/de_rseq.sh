@@ -94,7 +94,7 @@ fi
 sed '1d' $pdata | cut -f2 | uniq | tr "\\n" "\\t" | rev | cut -c 2- | rev > /home/cond.pairs
 sed '1d' $pdata | cut -f1 | awk '{print $1 ".bam"}' > /home/sample.list
 
-diffexp_script="/home/scripts/deseq/de_rseq.R"
+diffexp_script="/home/scripts/deseq/de_deseq.R"
 create_input='/home/scripts/deseq/create_exprs_fdata.py'
 
 samples=()
