@@ -99,7 +99,7 @@ create_input='/home/scripts/deseq/create_exprs_fdata.py'
 
 samples=()
 for name in `sed '1d' $pdata | cut -f1 | awk '{print $1 ".bam"}'`; do
-        samples+=( "$name".bam )
+        samples+=( "$name" )
 done
 
 
