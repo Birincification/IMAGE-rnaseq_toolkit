@@ -11,10 +11,10 @@ samples = sys.argv[5:]
 
 transform_conditions=True
 
-#for arg in sys.argv:
-#    print(arg)
-#for arg in samples:
-#    print(arg)
+for arg in sys.argv:
+    print(arg)
+for arg in samples:
+    print(arg)
 
 df = pd.read_csv(featureCounts, sep="\t", comment="#")
 df = df.drop(["Chr", "Start", "End", "Strand", "Length"], axis=1)
