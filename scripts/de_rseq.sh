@@ -124,15 +124,15 @@ for method in "hisat" "star" "contextmap" "ideal"; do
 		watch pidstat -dru -hlH '>>' $log/deseq_$method-$(date +%s).pidstat & wid=$!
 
 		( [ -f "$out/diff_exp_outs/DESeq.out" ] && echo "[INFO] [DESeq] $out/diff_exp_outs/DESeq.out already exists, skipping.."$'\n' ) || \
-            ( $diffexp_script $out/COUNTS/exprs_$method.txt $pdata $out/COUNTS/f_data_$method.txt DESeq $out/diff_exp_outs/DESeq_$method.out )
+            ( $diffexp_script $out/COUNTS/exprs_$method.txt $out/COUNTS/p_data_$method.txt $out/COUNTS/f_data_$method.txt DESeq $out/diff_exp_outs/DESeq_$method.out )
  
 
         ( [ -f "$out/diff_exp_outs/edgeR.out" ] && echo "[INFO] [edgeR] $out/diff_exp_outs/edgeR.out already exists, skipping.."$'\n' ) || \
-            ( $diffexp_script $out/COUNTS/exprs_$method.txt $pdata $out/COUNTS/f_data_$method.txt edgeR $out/diff_exp_outs/edgeR_$method.out )
+            ( $diffexp_script $out/COUNTS/exprs_$method.txt $out/COUNTS/p_data_$method.txt $out/COUNTS/f_data_$method.txt edgeR $out/diff_exp_outs/edgeR_$method.out )
 
 
         ( [ -f "$out/diff_exp_outs/limma.out" ] && echo "[INFO] [limma] $out/diff_exp_outs/limma.out already exists, skipping.."$'\n' ) || \
-            ( $diffexp_script $out/COUNTS/exprs_$method.txt $pdata $out/COUNTS/f_data_$method.txt limma $out/diff_exp_outs/limma_$method.out )
+            ( $diffexp_script $out/COUNTS/exprs_$method.txt $out/COUNTS/p_data_$method.txt $out/COUNTS/f_data_$method.txt limma $out/diff_exp_outs/limma_$method.out )
 
 		kill -15 $wid
 	fi
