@@ -32,11 +32,26 @@ p.data$sample <- NULL
 p.data$condition <- NULL
 #print(p.data)
 
+samples <- p.data$sample_id
+
 if(args$tool == "kallisto")
 {
-    files <- file.path(args$counts, p.data$sample_id, "abundance.h5")
+	message(sprintf("reading kallisto input from %s for:", args$counts))
+    print(samples)
+
+    files <- file.path(args$counts, samples, "abundance.h5")
     print(files)
     txi <- tximport(files, type="kallisto", txOut=TRUE)
+
+} else if (args$tool == "salmon") 
+{
+    message(sprintf("reading salmon input from %s for:", args$counts))
+    print(samples)
+    
+    quant_files = file.path(args$counts, samples, "quant.sf")
+    file.exists(quant_files)
+
+    txi = tximport(files = quant_files, type = "salmon", txOut = TRUE)
 
 } else
 {

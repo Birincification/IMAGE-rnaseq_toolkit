@@ -83,6 +83,8 @@ if [[ $# -ne 0 ]]; then
     #exit 4
 fi
 
+bandits="/home/scripts/bandits/das_bandits.R"
+
 sampledir="$out/SALMON/READS"
 sampledir2="$out/SALMON/STAR"
 sampledir3="$out/KALLISTO"
@@ -96,7 +98,7 @@ for file in `find $sampledir2 -name "*eq_classes.txt.gz"`; do gunzip $file; done
 if [[ "$salmon" = "y" ]]; then
 	watch pidstat -dru -hlH '>>' $log/bandits_salmon-$(date +%s).pidstat & wid=$!
 	( [ -f "$outfile.salmon_reads.gene.results" ] && echo "$'\n'[INFO] [BANDITS] $outfile.salmon_reads already exists; skipping.." ) || \
-		(/home/scripts/bandits/das_bandits.R --tx2gene $rindex --pdata $pdata --basedir $sampledir --outfile $outfile.salmon_reads --ncores $nthread --tool salmon)
+		($bandits --tx2gene $rindex --pdata $pdata --basedir $sampledir --outfile $outfile.salmon_reads --ncores $nthread --tool salmon)
 	
 	kill -15 $wid
 fi
@@ -105,7 +107,7 @@ if [[ "$salmonstar" = "y" ]]; then
 	watch pidstat -dru -hlH '>>' $log/bandits_salmon_star-$(date +%s).pidstat & wid=$!
 
 	( [ -f "$outfile.salmon_star.gene.results" ] && echo "$'\n'[INFO] [BANDITS] $outfile.salmon_star already exists; skipping.." ) || \
-		(/home/scripts/bandits/das_bandits.R --tx2gene $rindex --pdata $pdata --basedir $sampledir2 --outfile $outfile.salmon_star --ncores $nthread --tool salmon)
+		($bandits --tx2gene $rindex --pdata $pdata --basedir $sampledir2 --outfile $outfile.salmon_star --ncores $nthread --tool salmon)
 
 	kill -15 $wid
 fi
@@ -114,7 +116,7 @@ if [[ "$kallisto" = "y" ]]; then
 	watch pidstat -dru -hlH '>>' $log/bandits_kallisto-$(date +%s).pidstat & wid=$!
 
 	( [ -f "$outfile.kallisto.gene.results" ] && echo "$'\n'[INFO] [BANDITS] $outfile.kallisto already exists; skipping.." ) || \
-		(/home/scripts/bandits/das_bandits.R --tx2gene $rindex --pdata $pdata --basedir $sampledir3 --outfile $outfile.kallisto --ncores $nthread --tool kallisto)
+		($bandits --tx2gene $rindex --pdata $pdata --basedir $sampledir3 --outfile $outfile.kallisto --ncores $nthread --tool kallisto)
 
 	kill -15 $wid
 fi

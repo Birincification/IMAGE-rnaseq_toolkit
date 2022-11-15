@@ -16,7 +16,7 @@ if [[ ${PIPESTATUS[0]} -ne 4 ]]; then
 fi
 
 OPTIONS=
-LONGOPTS=pdata:,index:,out:,nthread:,log:,salmon,kallisto,
+LONGOPTS=pdata:,index:,out:,nthread:,log:,salmon,salmonstar,kallisto,
 
 # -regarding ! and PIPESTATUS see above
 # -temporarily store output to be able to check for errors
@@ -31,7 +31,7 @@ fi
 # read getopt’s output this way to handle the quoting right:
 eval set -- "$PARSED"
 
-pdata=- out=- index=- nthread=4 salmon=n kallisto=n
+pdata=- out=- index=- nthread=4 salmon=n salmonstar=n kallisto=n
 # now enjoy the options in order and nicely split until we see --
 while true; do
     case "$1" in
@@ -63,6 +63,14 @@ while true; do
             kallisto=y
             shift
             ;;
+        --salmon)
+            salmon=y
+            shift
+            ;;
+        --salmonstar)
+            salmonstar=y
+            shift
+            ;;
         --)
             shift
             break
@@ -87,6 +95,26 @@ sampledir3="$out/KALLISTO/quant"
 
 outfile="$out/diff_splicing_outs/DRIMSeq"
 rindex="$index/R/tx2gene.RData"
+
+for file in `find $sampledir -name "*eq_classes.txt.gz"`; do gunzip $file; done
+for file in `find $sampledir2 -name "*eq_classes.txt.gz"`; do gunzip $file; done  
+
+if [[ "$salmon" = "y" ]]; then
+	watch pidstat -dru -hlH '>>' $log/bandits_salmon-$(date +%s).pidstat & wid=$!
+	( [ -f "$outfile.salmon_reads.gene.results" ] && echo "$'\n'[INFO] [BANDITS] $outfile.salmon_reads already exists; skipping.." ) || \
+		($drimseq --counts $sampledir --pdata $pdata --outfile $outfile.salmon_star.out --tx2gene $rindex --ncores $nthread --tool salmon)
+	
+	kill -15 $wid
+fi
+
+if [[ "$salmonstar" = "y" ]]; then
+	watch pidstat -dru -hlH '>>' $log/bandits_salmon_star-$(date +%s).pidstat & wid=$!
+
+	( [ -f "$outfile.salmon_star.gene.results" ] && echo "$'\n'[INFO] [BANDITS] $outfile.salmon_star already exists; skipping.." ) || \
+		($drimseq --counts $sampledir2 --pdata $pdata --outfile $outfile.salmon_star.out --tx2gene $rindex --ncores $nthread --tool salmon)
+
+	kill -15 $wid
+fi
 
 #DRIMSeq on kallisto
 if [[ "$kallisto" = "y" ]]; then
