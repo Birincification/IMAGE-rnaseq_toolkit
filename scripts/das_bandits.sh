@@ -110,7 +110,6 @@ if [[ "$salmonstar" = "y" ]]; then
 	kill -15 $wid
 fi
 
-## for this need to update the rscript with additional params..
 if [[ "$kallisto" = "y" ]]; then
 	watch pidstat -dru -hlH '>>' $log/bandits_kallisto-$(date +%s).pidstat & wid=$!
 
@@ -119,5 +118,6 @@ if [[ "$kallisto" = "y" ]]; then
 
 	kill -15 $wid
 fi
+
 ## TODO implement flag for switch
 #podman run -v $index:$index -v $out:$out -v $pdata:$pdata --rm -it hadziahmetovic/rnaseq-toolkit /home/scripts/das_bandits.R --tx2gene $rindex --pdata $pdata --basedir $sampledir2 --outfile $outfile.kallisto --ncores $nthread
