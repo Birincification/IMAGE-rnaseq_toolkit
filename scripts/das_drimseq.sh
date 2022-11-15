@@ -100,17 +100,17 @@ for file in `find $sampledir -name "*eq_classes.txt.gz"`; do gunzip $file; done
 for file in `find $sampledir2 -name "*eq_classes.txt.gz"`; do gunzip $file; done  
 
 if [[ "$salmon" = "y" ]]; then
-	watch pidstat -dru -hlH '>>' $log/bandits_salmon-$(date +%s).pidstat & wid=$!
-	( [ -f "$outfile.salmon_reads.gene.results" ] && echo "$'\n'[INFO] [BANDITS] $outfile.salmon_reads already exists; skipping.." ) || \
-		($drimseq --counts $sampledir --pdata $pdata --outfile $outfile.salmon_star.out --tx2gene $rindex --ncores $nthread --tool salmon)
+	watch pidstat -dru -hlH '>>' $log/drimseq_salmon_reads-$(date +%s).pidstat & wid=$!
+	( [ -f "$outfile.salmon_reads.out" ] && echo "$'\n'[INFO] [DRIMSeq] $outfile.salmon_reads already exists; skipping.." ) || \
+		($drimseq --counts $sampledir --pdata $pdata --outfile $outfile.salmon_reads.out --tx2gene $rindex --ncores $nthread --tool salmon)
 	
 	kill -15 $wid
 fi
 
 if [[ "$salmonstar" = "y" ]]; then
-	watch pidstat -dru -hlH '>>' $log/bandits_salmon_star-$(date +%s).pidstat & wid=$!
+	watch pidstat -dru -hlH '>>' $log/drimseq_salmon_star-$(date +%s).pidstat & wid=$!
 
-	( [ -f "$outfile.salmon_star.gene.results" ] && echo "$'\n'[INFO] [BANDITS] $outfile.salmon_star already exists; skipping.." ) || \
+	( [ -f "$outfile.salmon_star.out" ] && echo "$'\n'[INFO] [DRIMSeq] $outfile.salmon_star already exists; skipping.." ) || \
 		($drimseq --counts $sampledir2 --pdata $pdata --outfile $outfile.salmon_star.out --tx2gene $rindex --ncores $nthread --tool salmon)
 
 	kill -15 $wid
