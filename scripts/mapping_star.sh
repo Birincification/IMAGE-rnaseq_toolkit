@@ -77,12 +77,16 @@ mkdir -p $baseout
 
 echo "[INFO] [STAR] ["`date "+%Y/%m/%d-%H:%M:%S"`"] Started processing $dir"$'\n'
 
+watch pidstat -dru -hlH '>>' $log/star_${dir}.$(date +%s).pidstat & wid2=$!
+
+mkdir -p $log/star_$dir
+
 for sample in `sed '1d' $pdata | cut -f1`; do
 	samplein=$samples/$sample
 	sampleout=$baseout/$sample
 	[ -f "$sampleout.bam" ] && echo "[INFO] [STAR] $sampleout already exists; skipping.."$'\n' && continue
 	##paired
-	watch pidstat -dru -hlH '>>' $log/star_${dir}_$sample-$(date +%s).pidstat & wid=$!
+	watch pidstat -dru -hlH '>>' $log/star_${dir}/$sample.$(date +%s).pidstat & wid=$!
 
 	[ -f "${samplein}_1.fastq.gz" ] &&\
 		$star --genomeDir $sindex --readFilesIn ${samplein}_1.fastq.gz ${samplein}_2.fastq.gz --runThreadN $nthread\
@@ -102,5 +106,7 @@ for sample in `sed '1d' $pdata | cut -f1`; do
 
 	kill -15 $wid
 done
+
+kill -15 $wid2
 
 echo "[INFO] [STAR] ["`date "+%Y/%m/%d-%H:%M:%S"`"] Finished processing $dir"$'\n'

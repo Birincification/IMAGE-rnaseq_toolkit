@@ -93,6 +93,8 @@ sampledir="$out/SALMON/READS"
 sampledir2="$out/SALMON/STAR"
 sampledir3="$out/KALLISTO/quant"
 
+dir=$(basename $out)
+
 outfile="$out/diff_splicing_outs/DRIMSeq"
 rindex="$index/R/tx2gene.RData"
 
@@ -100,7 +102,8 @@ for file in `find $sampledir -name "*eq_classes.txt.gz"`; do gunzip $file; done
 for file in `find $sampledir2 -name "*eq_classes.txt.gz"`; do gunzip $file; done  
 
 if [[ "$salmon" = "y" ]]; then
-	watch pidstat -dru -hlH '>>' $log/drimseq_salmon_reads-$(date +%s).pidstat & wid=$!
+	watch pidstat -dru -hlH '>>' $log/drimseq_${dir}_salmon-reads.$(date +%s).pidstat & wid=$!
+
 	( [ -f "$outfile.salmon_reads.out" ] && echo "$'\n'[INFO] [DRIMSeq] $outfile.salmon_reads already exists; skipping.." ) || \
 		($drimseq --counts $sampledir --pdata $pdata --outfile $outfile.salmon_reads.out --tx2gene $rindex --ncores $nthread --tool salmon)
 	
@@ -108,7 +111,7 @@ if [[ "$salmon" = "y" ]]; then
 fi
 
 if [[ "$salmonstar" = "y" ]]; then
-	watch pidstat -dru -hlH '>>' $log/drimseq_salmon_star-$(date +%s).pidstat & wid=$!
+	watch pidstat -dru -hlH '>>' $log/drimseq_${dir}_salmon-star.$(date +%s).pidstat & wid=$!
 
 	( [ -f "$outfile.salmon_star.out" ] && echo "$'\n'[INFO] [DRIMSeq] $outfile.salmon_star already exists; skipping.." ) || \
 		($drimseq --counts $sampledir2 --pdata $pdata --outfile $outfile.salmon_star.out --tx2gene $rindex --ncores $nthread --tool salmon)
@@ -118,7 +121,7 @@ fi
 
 #DRIMSeq on kallisto
 if [[ "$kallisto" = "y" ]]; then
-	watch pidstat -dru -hlH '>>' $log/drimseq_kallisto-$(date +%s).pidstat & wid=$!
+	watch pidstat -dru -hlH '>>' $log/drimseq_${dir}_kallisto.$(date +%s).pidstat & wid=$!
 	
 	( [ -f "$outfile.kallisto.out" ] && echo "[INFO] [DRIMSeq] $outfile.kallisto.out already exists, skipping.."$'\n' ) \
 		|| ($drimseq --counts $sampledir3 --pdata $pdata --outfile $outfile.kallisto.out --tx2gene $rindex --ncores $nthread)

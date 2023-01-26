@@ -77,12 +77,16 @@ mkdir -p $baseout
 
 echo "[INFO] [HISAT2] ["`date "+%Y/%m/%d-%H:%M:%S"`"] Started processing $dir"$'\n'
 
+watch pidstat -dru -hlH '>>' $log/hisat2_${dir}.$(date +%s).pidstat & wid2=$!
+
+mkdir -p $log/hisat2_$dir
+
 for sample in `sed '1d' $pdata | cut -f1`; do
 	samplein=$samples/$sample
 	sampleout=$baseout/$sample.bam
 	[ -f "$sampleout" ] && echo "[INFO] [HISAT] $sampleout already exists; skipping.."$'\n' && continue
 	##paired
-	watch pidstat -dru -hlH '>>' $log/hisat2_${dir}_$sample-$(date +%s).pidstat & wid=$!
+	watch pidstat -dru -hlH '>>' $log/hisat2_${dir}/$sample.$(date +%s).pidstat & wid=$!
 
 	[ -f "${samplein}_1.fastq.gz" ] &&\
 		$hisat -q --dta -p $nthread -x $hindex -1 ${samplein}_1.fastq.gz -2 ${samplein}_2.fastq.gz | \
@@ -94,5 +98,7 @@ for sample in `sed '1d' $pdata | cut -f1`; do
 
 	kill -15 $wid
 done
+
+kill -15 $wid2
 
 echo "[INFO] [HISAT2] ["`date "+%Y/%m/%d-%H:%M:%S"`"] Finished processing $dir"$'\n'

@@ -123,17 +123,18 @@ for method in "hisat" "star" "contextmap" "ideal"; do
 
 		##gene level counting
 		echo "[INFO] [featureCounts] ["`date "+%Y/%m/%d-%H:%M:%S"`"] Started processing $baseout"$'\n'
-		watch pidstat -dru -hlH '>>' $log/featureCounts_${dir}-$(date +%s).pidstat & wid=$!
+		watch pidstat -dru -hlH '>>' $log/featureCounts_${dir}.$(date +%s).pidstat & wid=$!
 
 		$featureCounts -T $nthread $paired -B -C -a $gtf --primary -o $baseout ${bams[@]}
 
 		kill -15 $wid
+		
 		sed '1d' $baseout | cut -f 1,7- > $out/gene.counts.$method
 
 		##exon_part level counting
 		if [[ "$dexseq" = "y" ]]; then
 			echo "[INFO] [featureCounts] ["`date "+%Y/%m/%d-%H:%M:%S"`"] Started processing $baseout.DEXSeq"$'\n'
-			watch pidstat -dru -hlH '>>' $log/featureCounts_exonicpart_${dir}-$(date +%s).pidstat & wid=$!
+			watch pidstat -dru -hlH '>>' $log/featureCounts-exonicpart_${dir}.$(date +%s).pidstat & wid=$!
 	
 			$featureCounts -T $nthread $paired -B -C -O -f -t exonic_part -a $index/dexseq/annot.noaggregate.gtf --primary -o $baseout.DEXSeq ${bams[@]}
 

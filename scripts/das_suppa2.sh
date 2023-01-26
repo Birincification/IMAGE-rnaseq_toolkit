@@ -87,6 +87,8 @@ SUPPA="python3 /home/software/SUPPA/suppa.py"
 
 GTFNAME=`basename $gtf`
 
+dir=$(basename $out)
+
 mkdir -p $out/SUPPA2
 
 #extract events from gtf
@@ -95,11 +97,13 @@ $SUPPA generateEvents -i $gtf -o $out/SUPPA2/$GTFNAME -f ioi
 if [[ "$salmon" = "y" ]]; then
 	d="READS"
 	root=$out/SALMON/$d
+
+	watch pidstat -dru -hlH '>>' $log/suppa2-psiPeform_${dir}_salmon.$(date +%s).pidstat & wid=$!
+
 	for cond in `sed '1d' $pdata | cut -f2 | sort -u`; do
 		files=`grep -P "\t$cond" $pdata | cut -f1`
 		f=`for file in $files; do echo $root/$file/quant.sf; done`
 		
-		watch pidstat -dru -hlH '>>' $log/suppa2_psiPeform_salmon_${d}_$cond-$(date +%s).pidstat & wid=$!
 
 		## salmon is -k1 -f4; for kallisto -k1 -f5
 		python3 /home/software/SUPPA//multipleFieldSelection.py \
@@ -109,11 +113,12 @@ if [[ "$salmon" = "y" ]]; then
 			-i $f -k 1 -f 5 -o $out/SUPPA2/salmon_$cond.$d.read.counts
 		
 		$SUPPA psiPerIsoform -g $gtf -e $out/SUPPA2/salmon_$cond.$d.tmp.counts -o $out/SUPPA2/$d.$cond
-
-		kill -15 $wid
 	done
 
-	watch pidstat -dru -hlH '>>' $log/suppa2_diff_$d-$(date +%s).pidstat & wid=$!
+	kill -15 $wid
+
+
+	watch pidstat -dru -hlH '>>' $log/suppa2-diff_${dir}_salmon.$(date +%s).pidstat & wid=$!
 
 	( [ -f "$out/diff_splicing_outs/SUPPA_salmon_$d.out" ] && echo "[INFO] [SUPPA2] $out/diff_splicing_outs/SUPPA_salmon_$d.out already exists, skipping.."$'\n' ) \
 			|| ($SUPPA diffSplice -m empirical --input $out/SUPPA2/$GTFNAME.ioi --psi $out/SUPPA2/$d*_isoform.psi \
@@ -129,12 +134,13 @@ fi
 if [[ "$salmonstar" = "y" ]]; then
 	d="STAR"
 	root=$out/SALMON/$d
+
+	watch pidstat -dru -hlH '>>' $log/suppa2-psiPeform_${dir}_salmon-star.$(date +%s).pidstat & wid=$!
+
 	for cond in `sed '1d' $pdata | cut -f2 | sort -u`; do
 		files=`grep -P "\t$cond" $pdata | cut -f1`
 		f=`for file in $files; do echo $root/$file/quant.sf; done`
 		
-		watch pidstat -dru -hlH '>>' $log/suppa2_psiPeform_salmon_${d}_$cond-$(date +%s).pidstat & wid=$!
-
 		## salmon is -k1 -f4; for kallisto -k1 -f5
 		python3 /home/software/SUPPA//multipleFieldSelection.py \
 			-i $f -k 1 -f 4 -o $out/SUPPA2/salmon_$cond.$d.tmp.counts
@@ -143,11 +149,12 @@ if [[ "$salmonstar" = "y" ]]; then
 			-i $f -k 1 -f 5 -o $out/SUPPA2/salmon_$cond.$d.read.counts
 		
 		$SUPPA psiPerIsoform -g $gtf -e $out/SUPPA2/salmon_$cond.$d.tmp.counts -o $out/SUPPA2/$d.$cond &> /dev/null
-
-		kill -15 $wid
 	done
 
-	watch pidstat -dru -hlH '>>' $log/suppa2_diff_$d-$(date +%s).pidstat & wid=$!
+	kill -15 $wid
+
+
+	watch pidstat -dru -hlH '>>' $log/suppa2-diff_${dir}_salmon-star.$(date +%s).pidstat & wid=$!
 
 	( [ -f "$out/diff_splicing_outs/SUPPA_salmon_$d.out" ] && echo "[INFO] [SUPPA2] $out/diff_splicing_outs/SUPPA_salmon_$d.out already exists, skipping.."$'\n' ) \
 			|| ($SUPPA diffSplice -m empirical --input $out/SUPPA2/$GTFNAME.ioi --psi $out/SUPPA2/$d*_isoform.psi \
@@ -163,11 +170,13 @@ fi
 if [[ "$kallisto" = "y" ]]; then
 	d="quant"
 	root=$out/KALLISTO/$d
+
+	watch pidstat -dru -hlH '>>' $log/suppa2-psiPeform_${dir}_kallisto.$(date +%s).pidstat & wid=$!
+
 	for cond in `sed '1d' $pdata | cut -f2 | sort -u`; do
 		files=`grep -P "\t$cond" $pdata | cut -f1`
 		f=`for file in $files; do echo $root/$file/abundance.tsv; done`
 		
-		watch pidstat -dru -hlH '>>' $log/suppa2_psiPeform_kallisto_$cond-$(date +%s).pidstat & wid=$!
 
 		## salmon is -k1 -f4; for kallisto -k1 -f5
 		python3 /home/software/SUPPA//multipleFieldSelection.py \
@@ -177,11 +186,11 @@ if [[ "$kallisto" = "y" ]]; then
 			-i $f -k 1 -f 4 -o $out/SUPPA2/kallisto_$cond.read.counts
 		
 		$SUPPA psiPerIsoform -g $gtf -e $out/SUPPA2/kallisto_$cond.tmp.counts -o $out/SUPPA2/kallisto.$cond &> /dev/null
-
-		kill -15 $wid
 	done
 
-	watch pidstat -dru -hlH '>>' $log/suppa2_diff_$d-$(date +%s).pidstat & wid=$!
+	kill -15 $wid
+
+	watch pidstat -dru -hlH '>>' $log/suppa2-diff_${dir}_kallisto.$(date +%s).pidstat & wid=$!
 
 	( [ -f "$out/diff_splicing_outs/SUPPA_kallisto.out" ] && echo "[INFO] [SUPPA2] $out/diff_splicing_outs/SUPPA_kallisto.out already exists, skipping.."$'\n' ) \
 			|| ($SUPPA diffSplice -m empirical --input $out/SUPPA2/$GTFNAME.ioi --psi $out/SUPPA2/kallisto*_isoform.psi \

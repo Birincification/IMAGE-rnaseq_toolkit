@@ -92,6 +92,10 @@ mkdir -p $baseoutP
 
 echo "[INFO] [kallisto] ["`date "+%Y/%m/%d-%H:%M:%S"`"] Started processing $dir"$'\n'
 
+watch pidstat -dru -hlH '>>' $log/kallisto_${dir}.$(date +%s).pidstat & wid2=$!
+
+mkdir -p $log/kallisto_$dir
+
 for sample in `sed '1d' $pdata | cut -f1`; do
 	samplein=$samples/$sample
 	sampleout=$baseout/$sample
@@ -99,7 +103,7 @@ for sample in `sed '1d' $pdata | cut -f1`; do
 
 	[ "$(ls -A $sampleout)" ] && echo "[INFO] [kallisto] $sampleout already exists; skipping.."$'\n' && continue
 	mkdir $sampleout
-	watch pidstat -dru -hlH '>>' $log/kallisto_${dir}_$sample-$(date +%s).pidstat & wid=$!
+	watch pidstat -dru -hlH '>>' $log/kallisto_${dir}/$sample.$(date +%s).pidstat & wid=$!
 	
 	##paired
 	[ -f "${samplein}_1.fastq.gz" ] &&\
@@ -112,5 +116,7 @@ for sample in `sed '1d' $pdata | cut -f1`; do
 
 	kill -15 $wid
 done
+
+kill -15 $wid2
 
 echo "[INFO] [kallisto] ["`date "+%Y/%m/%d-%H:%M:%S"`"] Finished processing $dir"$'\n'

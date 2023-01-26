@@ -98,6 +98,7 @@ dexseq_script="/home/scripts/dexseq/das_dexseq.R"
 dexseqFilter='/home/scripts/dexseq/modify_dexseq_featurecounts.py'
 dexseqHT='/home/scripts/dexseq/fc_to_ht.py'
 
+dir=$(basename $out)
 
 mkdir -p $out/DEXSEQ
 #DEXSeq
@@ -106,7 +107,7 @@ for method in "hisat" "star" "contextmap" "ideal"; do
 
 		basein=$out/COUNTS/featureCounts.$method.DEXSeq
 
-		watch pidstat -dru -hlH '>>' $log/dexseq_$method-$(date +%s).pidstat & wid=$!
+		watch pidstat -dru -hlH '>>' $log/dexseqFilter_${dir}_$method.$(date +%s).pidstat & wid=$!
 
 		##generate counts
 		echo "[INFO] [DEXSeq] ["`date "+%Y/%m/%d-%H:%M:%S"`"] $dexseqFilter"
@@ -120,7 +121,7 @@ for method in "hisat" "star" "contextmap" "ideal"; do
 		kill -15 $wid
 
 
-		watch pidstat -dru -hlH '>>' $log/dexseq_$method-$(date +%s).pidstat & wid=$!
+		watch pidstat -dru -hlH '>>' $log/dexseq_${dir}_$method.$(date +%s).pidstat & wid=$!
 
 		( [ -f "$out/diff_splicing_outs/DEXSeq.$method.out" ] && echo "[INFO] [DEXSeq] $out/diff_splicing_outs/DEXSeq.$method.out already exists, skipping.."$'\n' ) \
 			|| ($dexseq_script --pdata $pdata --countdir $out/DEXSEQ/${method}_HTcounts --condpairs /home/cond.pairs \
