@@ -81,6 +81,8 @@ watch pidstat -dru -hlH '>>' $log/star_${dir}.$(date +%s).pidstat & wid2=$!
 
 mkdir -p $log/star_$dir
 
+starter="$(date +%s)"
+
 for sample in `sed '1d' $pdata | cut -f1`; do
 	samplein=$samples/$sample
 	sampleout=$baseout/$sample
@@ -106,6 +108,8 @@ for sample in `sed '1d' $pdata | cut -f1`; do
 
 	kill -15 $wid
 done
+
+echo "$(($(date +%s)-$starter))" >> $log/star_${dir}.$(date +%s).runtime
 
 kill -15 $wid2
 

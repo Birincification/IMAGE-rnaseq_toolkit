@@ -93,6 +93,7 @@ mkdir -p $baseoutP
 echo "[INFO] [kallisto] ["`date "+%Y/%m/%d-%H:%M:%S"`"] Started processing $dir"$'\n'
 
 watch pidstat -dru -hlH '>>' $log/kallisto_${dir}.$(date +%s).pidstat & wid2=$!
+starter="$(date +%s)"
 
 mkdir -p $log/kallisto_$dir
 
@@ -116,7 +117,7 @@ for sample in `sed '1d' $pdata | cut -f1`; do
 
 	kill -15 $wid
 done
-
+echo "$(($(date +%s)-$starter))" >> $log/kallisto_${dir}.$(date +%s).runtime
 kill -15 $wid2
 
 echo "[INFO] [kallisto] ["`date "+%Y/%m/%d-%H:%M:%S"`"] Finished processing $dir"$'\n'
