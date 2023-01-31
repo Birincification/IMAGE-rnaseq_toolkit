@@ -99,6 +99,8 @@ for file in `find $sampledir2 -name "*eq_classes.txt.gz"`; do gunzip $file; done
 
 if [[ "$salmon" = "y" ]]; then
 	watch pidstat -dru -hlH '>>' $log/bandits_${dir}_salmon.$(date +%s).pidstat & wid=$!
+	starter="$(date +%s)"
+
 	( [ -f "$outfile.salmon_reads.gene.results" ] && echo "$'\n'[INFO] [BANDITS] $outfile.salmon_reads already exists; skipping.." ) || \
 		($bandits --tx2gene $rindex --pdata $pdata --basedir $sampledir --outfile $outfile.salmon_reads --ncores $nthread --tool salmon)
 
@@ -108,6 +110,7 @@ fi
 
 if [[ "$salmonstar" = "y" ]]; then
 	watch pidstat -dru -hlH '>>' $log/bandits_${dir}_salmon-star.$(date +%s).pidstat & wid=$!
+	starter="$(date +%s)"
 
 	( [ -f "$outfile.salmon_star.gene.results" ] && echo "$'\n'[INFO] [BANDITS] $outfile.salmon_star already exists; skipping.." ) || \
 		($bandits --tx2gene $rindex --pdata $pdata --basedir $sampledir2 --outfile $outfile.salmon_star --ncores $nthread --tool salmon)
@@ -118,6 +121,7 @@ fi
 
 if [[ "$kallisto" = "y" ]]; then
 	watch pidstat -dru -hlH '>>' $log/bandits_${dir}_kallisto.$(date +%s).pidstat & wid=$!
+	starter="$(date +%s)"
 
 	( [ -f "$outfile.kallisto.gene.results" ] && echo "$'\n'[INFO] [BANDITS] $outfile.kallisto already exists; skipping.." ) || \
 		($bandits --tx2gene $rindex --pdata $pdata --basedir $sampledir3 --outfile $outfile.kallisto --ncores $nthread --tool kallisto)
