@@ -128,7 +128,7 @@ for method in "hisat" "star" "contextmap" "ideal"; do
 
 		$featureCounts -T $nthread $paired -B -C -a $gtf --primary -o $baseout ${bams[@]}
 
-		echo "$(($(date +%s)-$wid))" >> $log/featureCounts_${dir}.$(date +%s).runtime
+		echo "$(($(date +%s)-$starter))" >> $log/featureCounts_${dir}.$(date +%s).runtime
 		kill -15 $wid
 		
 		sed '1d' $baseout | cut -f 1,7- > $out/gene.counts.$method
@@ -141,7 +141,7 @@ for method in "hisat" "star" "contextmap" "ideal"; do
 	
 			$featureCounts -T $nthread $paired -B -C -O -f -t exonic_part -a $index/dexseq/annot.noaggregate.gtf --primary -o $baseout.DEXSeq ${bams[@]}
 
-			echo "$(($(date +%s)-$wid))" >> $log/featureCounts-exonicpart_${dir}.$(date +%s).runtime
+			echo "$(($(date +%s)-$starter))" >> $log/featureCounts-exonicpart_${dir}.$(date +%s).runtime
 			kill -15 $wid
 		fi
 	fi
