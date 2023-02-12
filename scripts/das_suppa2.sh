@@ -115,7 +115,7 @@ if [[ "$salmon" = "y" ]]; then
 		
 		$SUPPA psiPerIsoform -g $gtf -e $out/SUPPA2/salmon_$cond.$d.tmp.counts -o $out/SUPPA2/$d.$cond
 	done
-	echo "$(($(date +%s)-$starter))" >> $log/suppa2-psiPeform_${dir}_salmon.$(date +%s).runtime
+	echo "$(($(date +%s)-$starter))" >> $log/suppa2-psiPeform-salmon_${dir}.$(date +%s).runtime
 	kill -15 $wid
 
 
@@ -126,7 +126,7 @@ if [[ "$salmon" = "y" ]]; then
 			|| ($SUPPA diffSplice -m empirical --input $out/SUPPA2/$GTFNAME.ioi --psi $out/SUPPA2/$d*_isoform.psi \
     	-e $out/SUPPA2/salmon_*.$d.tmp.counts -gc -o $out/SUPPA2/SUPPA_salmon_$d.out)
 
-	echo "$(($(date +%s)-$starter))" >> $log/suppa2-diff_${dir}_salmon.$(date +%s).runtime
+	echo "$(($(date +%s)-$starter))" >> $log/suppa2-diff-salmon_${dir}.$(date +%s).runtime
 	kill -15 $wid
 
 	( [ -f "$out/diff_splicing_outs/SUPPA_salmon_$d.out" ]) || \
@@ -154,7 +154,7 @@ if [[ "$salmonstar" = "y" ]]; then
 		
 		$SUPPA psiPerIsoform -g $gtf -e $out/SUPPA2/salmon_$cond.$d.tmp.counts -o $out/SUPPA2/$d.$cond &> /dev/null
 	done
-	echo "$(($(date +%s)-$starter))" >> $log/suppa2-psiPeform_${dir}_salmon-star.$(date +%s).runtime
+	echo "$(($(date +%s)-$starter))" >> $log/suppa2-psiPeform-salmon-star_${dir}.$(date +%s).runtime
 	kill -15 $wid
 
 
@@ -165,7 +165,7 @@ if [[ "$salmonstar" = "y" ]]; then
 			|| ($SUPPA diffSplice -m empirical --input $out/SUPPA2/$GTFNAME.ioi --psi $out/SUPPA2/$d*_isoform.psi \
     	-e $out/SUPPA2/salmon_*.$d.tmp.counts -gc -o $out/SUPPA2/SUPPA_salmon_$d.out)
 
-	echo "$(($(date +%s)-$starter))" >> $log/suppa2-diff_${dir}_salmon-star.$(date +%s).runtime
+	echo "$(($(date +%s)-$starter))" >> $log/suppa2-diff-salmon-star_${dir}.$(date +%s).runtime
 	kill -15 $wid
 
 	( [ -f "$out/diff_splicing_outs/SUPPA_salmon_$d.out" ]) || \
@@ -194,7 +194,7 @@ if [[ "$kallisto" = "y" ]]; then
 		
 		$SUPPA psiPerIsoform -g $gtf -e $out/SUPPA2/kallisto_$cond.tmp.counts -o $out/SUPPA2/kallisto.$cond &> /dev/null
 	done
-	echo "$(($(date +%s)-$starter))" >> $log/suppa2-psiPeform_${dir}_kallisto.$(date +%s).runtime
+	echo "$(($(date +%s)-$starter))" >> $log/suppa2-psiPeform-kallisto_${dir}.$(date +%s).runtime
 	kill -15 $wid
 
 	watch pidstat -dru -hlH '>>' $log/suppa2-diff_${dir}_kallisto.$(date +%s).pidstat & wid=$!
@@ -204,7 +204,7 @@ if [[ "$kallisto" = "y" ]]; then
 			|| ($SUPPA diffSplice -m empirical --input $out/SUPPA2/$GTFNAME.ioi --psi $out/SUPPA2/kallisto*_isoform.psi \
     	-e $out/SUPPA2/kallisto*.tmp.counts -gc -o $out/SUPPA2/SUPPA_kallisto.out)
 
-	echo "$(($(date +%s)-$starter))" >> $log/suppa2-diff_${dir}_kallisto.$(date +%s).runtime
+	echo "$(($(date +%s)-$starter))" >> $log/suppa2-diff-kallisto_${dir}.$(date +%s).runtime
 	kill -15 $wid
 
 	( [ -f "$out/diff_splicing_outs/SUPPA_kallisto.out" ]) || \

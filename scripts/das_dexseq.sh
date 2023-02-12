@@ -119,7 +119,7 @@ for method in "hisat" "star" "contextmap" "ideal"; do
 		$dexseqHT --fcfile $basein.filtered --htdir $out/DEXSEQ/${method}_HTcounts --sampletable /home/sample.list
 		echo "[INFO] [DEXSeq] ["`date "+%Y/%m/%d-%H:%M:%S"`"] Preprocessing finished"$'\n'
 
-		echo "$(($(date +%s)-$starter))" >> $log/dexseqFilter_${dir}_$method.$(date +%s).runtime
+		echo "$(($(date +%s)-$starter))" >> $log/dexseqFilter-${method}_${dir}.$(date +%s).runtime
 		kill -15 $wid
 
 
@@ -130,7 +130,7 @@ for method in "hisat" "star" "contextmap" "ideal"; do
 			|| ($dexseq_script --pdata $pdata --countdir $out/DEXSEQ/${method}_HTcounts --condpairs /home/cond.pairs \
 				--gtf $index/dexseq/annot.noaggregate.gtf --outdir $out/diff_splicing_outs --method $method --ncores $nthread)
 
-		echo "$(($(date +%s)-$starter))" >> $log/dexseq_${dir}_$method.$(date +%s).runtime
+		echo "$(($(date +%s)-$starter))" >> $log/dexseq-${method}_${dir}.$(date +%s).runtime
 		kill -15 $wid
 	fi
 done

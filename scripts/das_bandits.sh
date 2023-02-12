@@ -115,7 +115,7 @@ if [[ "$salmonstar" = "y" ]]; then
 	( [ -f "$outfile.salmon_star.gene.results" ] && echo "$'\n'[INFO] [BANDITS] $outfile.salmon_star already exists; skipping.." ) || \
 		($bandits --tx2gene $rindex --pdata $pdata --basedir $sampledir2 --outfile $outfile.salmon_star --ncores $nthread --tool salmon)
 
-	echo "$(($(date +%s)-$starter))" >> $log/bandits_${dir}_salmon-star.$(date +%s).runtime
+	echo "$(($(date +%s)-$starter))" >> $log/bandits-salmon-star_${dir}.$(date +%s).runtime
 	kill -15 $wid
 fi
 
@@ -126,7 +126,7 @@ if [[ "$kallisto" = "y" ]]; then
 	( [ -f "$outfile.kallisto.gene.results" ] && echo "$'\n'[INFO] [BANDITS] $outfile.kallisto already exists; skipping.." ) || \
 		($bandits --tx2gene $rindex --pdata $pdata --basedir $sampledir3 --outfile $outfile.kallisto --ncores $nthread --tool kallisto)
 
-	echo "$(($(date +%s)-$starter))" >> $log/bandits_${dir}_kallisto.$(date +%s).runtime
+	echo "$(($(date +%s)-$starter))" >> $log/bandits-kallisto_${dir}.$(date +%s).runtime
 	kill -15 $wid
 fi
 
