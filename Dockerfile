@@ -43,6 +43,8 @@ RUN R -e 'BiocManager::install("BANDITS")'
 RUN R -e 'BiocManager::install("DRIMSeq")'
 RUN R -e 'BiocManager::install("DEXSeq")'
 
+RUN pip3 install scikit-learn
+
 ADD data /home/data
 ADD scripts /home/scripts
 ADD software /home/software
