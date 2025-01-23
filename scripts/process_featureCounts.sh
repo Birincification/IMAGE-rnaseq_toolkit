@@ -44,11 +44,11 @@ paired=''
 while true; do
     case "$1" in
 		--index)
-        	index="$2"
+		index="$2"
             shift 2
             ;;
 		--gtf)
-        	gtf="$2"
+			gtf="$2"
             shift 2
             ;;
 		--pdata)

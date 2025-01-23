@@ -43,22 +43,22 @@ while true; do
             shift 2
             ;;
 		--index)
-        	index="$2"
+			index="$2"
             shift 2
             ;;
 		--out)
-        	out="$2"
+			out="$2"
             shift 2
             ;;
         --nthread)
-        	nthread="$2"
+			nthread="$2"
             shift 2
             ;;
 		--log)
-        	log="$2"
+			log="$2"
             shift 2
             ;;
-	    --hisat2)
+		--hisat2)
             map[hisat]=y
             shift
             ;;
