@@ -32,7 +32,7 @@ RUN cd /tmp && git clone --branch 1.11 https://github.com/samtools/bcftools.git 
 RUN pip3 install numpy cython pandas
 RUN pip3 install pysam
 RUN pip3 install HTSeq
-RUN pip3 install sklearn statsmodels
+RUN pip3 install scikit-learn statsmodels
 
 RUN R -e 'install.packages(c("BiocManager", "devtools", "argparse", "dbplyr"))'
 RUN R -e 'BiocManager::install("tximport")'
@@ -43,7 +43,6 @@ RUN R -e 'BiocManager::install("BANDITS")'
 RUN R -e 'BiocManager::install("DRIMSeq")'
 RUN R -e 'BiocManager::install("DEXSeq")'
 
-RUN pip3 install scikit-learn
 
 ADD data /home/data
 ADD scripts /home/scripts
